@@ -1,0 +1,21 @@
+DATASETS:
+  - name: jump_cell_painting
+    id: 1
+    type: unstructured
+    path: datasets/unstructured/1_jump_cell_painting/noisy.tiff
+    url: https://zenodo.org/records/10912386/files/noisy.tiff?download=1
+  - name: w2s
+    type: unstructured
+    id: 2
+    path: datasets/unstructured/2_w2s/noisy.tiff
+    url: https://zenodo.org/records/10925783/files/noisy.tiff?download=1
+  - name: hagen
+    type: structured
+    id: 1
+    path: datasets/structured/1_hagen/noisy.tiff
+    url: https://zenodo.org/records/10925855/files/noisy.tiff?download=1
+  - name: support
+    id: 2
+    type: structured
+    path: datasets/structured/2_SUPPORT/noisy.tiff
+    url: https://zenodo.org/records/10925939/files/noisy.tiff?download=1

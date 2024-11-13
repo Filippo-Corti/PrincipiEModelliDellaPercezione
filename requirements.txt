@@ -1,0 +1,10 @@
+--extra-index-url https://download.pytorch.org/whl/cu118
+torch
+torchvision
+torchaudio
+careamics==0.1.0rc8
+aiohttp
+zarr<3.0.0
+tiffile
+scikit-learn
+matplotlib
