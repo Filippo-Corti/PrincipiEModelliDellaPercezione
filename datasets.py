@@ -29,14 +29,15 @@ async def download_datasets(dataset_yml="datasets.yml"):
         DATASETS:
             - path: path/to/dataset
             - url: url/to/dataset
-
+ 
     '''    
     DATASETS = load_datasets_yml(dataset_yml)
     async with aiohttp.ClientSession() as session:
         for dataset in DATASETS:
             path = dataset["path"]
             url = dataset["url"]
-            os.makedirs(path, exist_ok=True)
+            dir_path = os.path.dirname(path) # Separate Directories from the file name
+            os.makedirs(dir_path, exist_ok=True)
             async with session.get(url) as response:
                 with open(path, "wb") as f:
                     f.write(await response.read())
@@ -81,15 +82,6 @@ def load_split_datasets(dataset_name, dataset_yml='datasets.yml', channelwise_st
 def load_tiff(path, take_N=-1):
     """
     Load a TIFF dataset from a path
-    
-    Args:
-        - path: str
-            Path to the dataset
-        - take_N: int
-            Number of images to take from the dataset. Default is -1, which means all images
-    Returns:
-        - dataset: np.array
-            The dataset
     """
     dataset = tiff.imread(path)
     if take_N != -1:
@@ -132,7 +124,9 @@ def split_dataset(dataset_path, split_ratio=0.8, shuffle=True, take_N=-1, seed=N
                     
     """
     dataset = load_tiff(dataset_path, take_N=take_N)
+    log.info(f"Dataset size is {len(dataset)}")
     split_idx = int(len(dataset) * split_ratio)
+    log.info(f"Split the dataset at index {split_idx}/{len(dataset)}")
     if shuffle:
         log.info("Shuffling dataset")
         if seed:
@@ -142,9 +136,7 @@ def split_dataset(dataset_path, split_ratio=0.8, shuffle=True, take_N=-1, seed=N
     train, val = dataset[:split_idx], dataset[split_idx:]
 
     # Saving the datasets
-    ext = '.tiff' if '.tiff' in dataset_path else '.tif'
-    if ext not in dataset_path:
-        raise ValueError(f"Dataset path should have .tif or .tiff extension. Got {dataset_path}")
+    ext = '.tiff'
 
     dpath = dataset_path.replace(ext, f"_train{ext}")
     tiff.imwrite(dpath, data=train)
@@ -170,10 +162,14 @@ def split_dataset(dataset_path, split_ratio=0.8, shuffle=True, take_N=-1, seed=N
 
 
 async def main():
-    # await download_datasets()
+    # Eventually Download Datasets
     if args.download:
+        log.info("Starting datasets download...")
         await download_datasets()
-    # Load datasets
+    
+    log.info("Datasets downloads are ready!")
+    
+    # Split Datasets & Load separately
     datasets = load_datasets_yml()
     for dataset_descr in datasets:
         if args.split:

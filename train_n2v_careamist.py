@@ -67,7 +67,9 @@ def main(dataset_name, batch_size=256, take_n=-1, use_n2v2=False, output_root='m
     careamist = CAREamist(source=config, work_dir=os.path.join(output_root, exp_name))
 
     # train model
+    log.info(f"Training starting now... {config}")
     careamist.train(train_source=train, val_source=val)
+    log.info("Training ended!")
 
 if __name__ == "__main__":
 

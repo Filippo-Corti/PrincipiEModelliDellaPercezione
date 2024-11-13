@@ -1,4 +1,4 @@
-name: edog
+name: n2v
 channels:
   - pytorch
   - nvidia
@@ -222,4 +222,3 @@ dependencies:
       - xarray==2024.6.0
       - zarr==2.18.2
       - zstandard==0.22.0
-prefix: /localscratch/conda/envs/edog
