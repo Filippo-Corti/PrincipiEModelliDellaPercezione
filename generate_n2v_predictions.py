@@ -18,10 +18,14 @@ def generate_predictions(output_root:str, model_ckpt: str, model_name: str, data
     model = CAREamist(model_ckpt, work_dir=os.path.dirname(os.path.dirname(model_ckpt)))
 
     predictions = []
+    i = 0
     for data_batch in iter_tiff_batch(dset['path'], batch_size):
-        print(f"Predicting batch of shape {data_batch.shape}")
+        print(f"Predicting batch of shape {data_batch.shape}, number {i}")
         pred_batch = model.predict(source=data_batch, data_type='array', axes='SCYX' if data_batch.ndim == 4 else 'SYX')
         predictions.append(pred_batch)
+        i+=1
+        if i >= 100:
+            break
     predictions = np.concatenate(predictions, axis=0).squeeze()
     print(f"Saving predictions of shape {predictions.shape}")
     os.makedirs(os.path.dirname(output_path), exist_ok=True)

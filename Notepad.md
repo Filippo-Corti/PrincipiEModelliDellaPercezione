@@ -41,7 +41,17 @@ Because the images are only 517, they are distributed with a split_ratio of 0.8 
 
 ``` python train_n2v_careamist.py --epochs 400 --batch_size=512 --output_dir models/n2v_n2v2 --dataset_name jump_cell_painting ```
 
-> I apparently can't run it on the WSL, I should try again to install everything directly on Windows...
+> Currently run with epochs = 100 and batch_size = 32
+
+## 4. Apply the Model to the Dataset
+
+- Run the command:
+
+``` python generate_n2v_predictions.py --model_name=n2v --model_ckpt=models/n2v_n2v2/n2v_jump_cell_painting_chwise/checkpoints/last.ckpt --dataset_name=jump_cell_painting ```
+
+> For some reason it prints "Killed" after there are no more images to load. Manually broke the cycle to try to fix it.
+
+
 
 
 
