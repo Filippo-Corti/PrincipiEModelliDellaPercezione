@@ -5,4 +5,5 @@ __pycache__
 datasets/
 *.code-workspace
 lightning_logs/
+predictions/
 *.ckpt
