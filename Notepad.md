@@ -1,58 +1,47 @@
-# Step-by-step guide to Setup and Run Predictions
+# A. Argomenti per la presentazione
 
-## 1. Check/install dependencies 
+- Cos'è il Rumore:
+    - Come si forma
+    - Come si classifica
 
-- Make sure Python and Anaconda ("conda") are installed and working.
-- Setup the Conda Environment:
+- Tecniche per la Rimozione del Rumore (Denoising):
+    - Filtri Tradizionali
+    - Reti Neurali
+        - Cosa fanno meglio rispetto ai Filtri?
+        - Due diversi casi per l'addestramento del modello:
+            - Noisy + Clean Images
+                - CNN
+                - GAN
+            - Noisy Images
+                - N2N
+                - N2V
 
-    ``` conda env create -f conda.yml ```
+- L'Algoritmo N2V
+    - Caratteristiche e confronti rispetto agli altri
+    - Settori dove è maggiormente utilizzato
+    - Principio di Funzionamento dell'Algoritmo
+        - Le Componenti Principali:
+            - U-Net
+            - Loss Function -> A che Grand Truth fa riferimento?
+            - ...
 
-    ``` conda activate n2v ```
+- N2V in pratica:
+    - Grand Challenge
+    - Codice Python
+    - Risultati con diversi valori per epochs e batch_size
+    - Difetti del N2V e possibili risoluzioni
 
-    ``` pip install -r requirements.txt ```
+- Come l'N2V si ispira al nostro Sistema Nervoso nella Vista.
 
-> This apparently simple step took me 3.5 hours of conversations with ChatGPT and only worked on Linux (not on Windows)
+# B. Risorse
 
-## 2. Download JUMP Dataset
+[CAREamics source code] https://github.com/CAREamics/careamics/blob/main/src/careamics/careamist.py#L423 \
+[Pytorch Lightning Trainer] https://lightning.ai/docs/pytorch/stable/common/trainer.html \
+[CAREamics code for the Challenge - with comparison images] https://careamics.github.io/0.1/applications/Noise2Void/JUMP/ \
+[CAREamics code to test N2V on natural images] https://careamics.github.io/0.1/applications/Noise2Void/BSD68/ 
 
-- First Download the Dataset from the URL using:
-    ``` python datasets.py --download ```
+[CAREamics Noise2Void Overview] https://careamics.github.io/0.1/algorithms/Noise2Void/ \
+[Original Article presenting N2V] https://openaccess.thecvf.com/content_CVPR_2019/papers/Krull_Noise2Void_-_Learning_Denoising_From_Single_Noisy_Images_CVPR_2019_paper.pdf \
+[ ??? ] https://proceedings.mlr.press/v97/batson19a/batson19a.pdf
 
-- Then Split the Dataset between Training and Validation Data using:
-``` python datasets.py --split --split_ratio=0.8 --shuffle --seed=0 ```
-
-> This will also create some .npy files containing some statistics about the data (unsure about the usefulness of this)
-
-### Important: 
-The original noisy.tiff file is composed of 517x4=2068 layers, but there are only 517 images, because every image is stored as 4 grayscale images representing (probably) the RGBA channels. This type of tiff file is called hyperstack. \
-\
-The split operation merges the 4 channels for every image (that's the way tifffile works apparently), considering the 517 colored images. \
-Because the images are only 517, they are distributed with a split_ratio of 0.8 as follows:
-* 413 images in noisy_train.tiff
-* 104 images in noisy_val.tiff
-
-## 3. Training the N2V Model
-
-- For some reason a new package is needed. Run:
-
-    ``` pip install lightning[extra] ```
-
-- Train the N2V Model using:
-
-``` python train_n2v_careamist.py --epochs 400 --batch_size=512 --output_dir models/n2v_n2v2 --dataset_name jump_cell_painting ```
-
-> Currently run with epochs = 100 and batch_size = 32
-
-## 4. Apply the Model to the Dataset
-
-- Run the command:
-
-``` python generate_n2v_predictions.py --model_name=n2v --model_ckpt=models/n2v_n2v2/n2v_jump_cell_painting_chwise/checkpoints/last.ckpt --dataset_name=jump_cell_painting ```
-
-> For some reason it prints "Killed" after there are no more images to load. Manually broke the cycle to try to fix it.
-
-
-
-
-
-
+[Fixing N2V Problems] https://link.springer.com/chapter/10.1007/978-3-031-25069-9_33

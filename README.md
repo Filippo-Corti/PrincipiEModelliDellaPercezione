@@ -1,148 +1,61 @@
-# AI4Life N2V, N2V2 and HDN SUMBISSIONS
+# Step-by-step guide to Setup and Run N2V Predictions
 
-### Dataset info
-````
-jump_cell_painting train: train_shape=(413, 4, 540, 540)
-jump_cell_painting val: val_shape=(104, 4, 540, 540)
-w2s train: train_shape=(96, 3, 512, 512)
-w2s val: val_shape=(24, 3, 512, 512)
-hagen train: train_shape=(63, 1024, 1024)
-hagen val: val_shape=(16, 1024, 1024)
-support train: train_shape=(800, 1024, 1024)
-support val: val_shape=(201, 1024, 1024)
+## 1. Check/install dependencies 
 
-````
-# AI4Life N2V, N2V2 and HDN SUMBISSIONS
+- Make sure Python and Anaconda ("conda") are installed and working.
+- Setup the Conda Environment:
 
-### Dataset info
-````
-jump_cell_painting train: train_shape=(413, 4, 540, 540)
-jump_cell_painting val: val_shape=(104, 4, 540, 540)
-w2s train: train_shape=(96, 3, 512, 512)
-w2s val: val_shape=(24, 3, 512, 512)
-hagen train: train_shape=(63, 1024, 1024)
-hagen val: val_shape=(16, 1024, 1024)
-support train: train_shape=(800, 1024, 1024)
-support val: val_shape=(201, 1024, 1024)
+    ``` conda env create -f conda.yml ```
 
-````
+    ``` conda activate n2v ```
 
-## Steps to reproduce
+    ``` pip install -r requirements.txt ```
 
-## 1. Activate Conda Environment
+> This apparently simple step took me 3.5 hours of conversations with ChatGPT and only worked on Linux (not on Windows)
 
-``` conda env create -f conda.yml ```
+## 2. Download JUMP Dataset
 
-``` conda activate n2v ```
+- First Download the Dataset from the URL using:
+    ``` python datasets.py --download ```
 
-``` pip install -r requirements.txt ```
+- Then Split the Dataset between Training and Validation Data using:
+``` python datasets.py --split --split_ratio=0.8 --shuffle --seed=0 ```
 
-## 2. Download and split data
+> This will also create some .npy files containing some statistics about the data (unsure about the usefulness of this)
 
-Dataset urls and save paths are defined in `datasets.yml`.
+### Important: 
+The original noisy.tiff file is composed of 517x4=2068 layers, but there are only 517 images, because every image is stored as 4 grayscale images representing (probably) the RGBA channels. This type of tiff file is called hyperstack. \
+\
+The split operation merges the 4 channels for every image (that's the way tifffile works apparently), considering the 517 colored images. \
+Because the images are only 517, they are distributed with a split_ratio of 0.8 as follows:
+* 413 images in noisy_train.tiff
+* 104 images in noisy_val.tiff
 
-``` python datasets.py --split --split_ratio=0.8 --seed=1234567890 ```
+## 3. Training the N2V Model
 
+- For some reason a new package is needed. Run:
 
-## 3. Train the N2V/N2V2 models
+    ``` pip install lightning[extra] ```
 
-Use the `train_n2v_careamist.py` script to train each model.
+- Train the N2V Model using:
 
-```
-python train_n2v_careamist.py --epochs 400 --batch_size=512 --output_dir models/n2v_n2v2 --dataset_name hagen
-python train_n2v_careamist.py --epochs 400 --batch_size=512 --output_dir models/n2v_n2v2 --dataset_name jump_cell_painting
-python train_n2v_careamist.py --epochs 400 --batch_size=512 --output_dir models/n2v_n2v2 --dataset_name support
-python train_n2v_careamist.py --epochs 400 --batch_size=512 --output_dir models/n2v_n2v2 --dataset_name w2s
-python train_n2v_careamist.py --epochs 400 --batch_size=512 --output_dir models/n2v_n2v2 --dataset_name hagen --use_n2v2
-python train_n2v_careamist.py --epochs 400 --batch_size=512 --output_dir models/n2v_n2v2 --dataset_name jump_cell_painting  --use_n2v2
-python train_n2v_careamist.py --epochs 400 --batch_size=512 --output_dir models/n2v_n2v2 --dataset_name support --use_n2v2
-python train_n2v_careamist.py --epochs 400 --batch_size=512 --output_dir models/n2v_n2v2 --dataset_name w2s --use_n2v2
+``` python train_n2v_careamist.py --epochs 400 --batch_size=512 --output_dir models/n2v_n2v2 --dataset_name jump_cell_painting ```
 
-```
+> Currently run with epochs = 100 and batch_size = 32
 
-Model folders will be called `models/n2v_n2v2/[n2v | n2v2]_<dataset_name>_chwise`. 
+## 4. Apply the Model to the Dataset
 
-## 4. Generate Ground Truths for HDN Noise Models
+- Run the command:
 
-```bash
+``` python generate_n2v_predictions.py --model_name=n2v --model_ckpt=models/n2v_n2v2/n2v_jump_cell_painting_chwise/checkpoints/last.ckpt --dataset_name=jump_cell_painting ```
 
-python generate_n2v_predictions.py --model_name=n2v --model_ckpt=models/n2v_n2v2/n2v_jump_cell_painting_chwise/checkpoints/last.ckpt --dataset_name=jump_cell_painting
-python generate_n2v_predictions.py --model_name=n2v2 --model_ckpt=models/n2v_n2v2/n2v2_jump_cell_painting_chwise/checkpoints/last.ckpt --dataset_name=jump_cell_painting
-python generate_n2v_predictions.py --model_name=n2v --model_ckpt=models/n2v_n2v2/n2v_hagen_chwise/checkpoints/last.ckpt --dataset_name=hagen
-python generate_n2v_predictions.py --model_name=n2v2 --model_ckpt=models/n2v_n2v2/n2v2_hagen_chwise/checkpoints/last.ckpt --dataset_name=hagen
-python generate_n2v_predictions.py --model_name=n2v --model_ckpt=models/n2v_n2v2/n2v_support_chwise/checkpoints/last.ckpt --dataset_name=support
-python generate_n2v_predictions.py --model_name=n2v2 --model_ckpt=models/n2v_n2v2/n2v2_support_chwise/checkpoints/last.ckpt --dataset_name=support
-python generate_n2v_predictions.py --model_name=n2v --model_ckpt=models/n2v_n2v2/n2v_w2s_chwise/checkpoints/last.ckpt --dataset_name=w2s
-python generate_n2v_predictions.py --model_name=n2v2 --model_ckpt=models/n2v_n2v2/n2v2_w2s_chwise/checkpoints/last.ckpt --dataset_name=w2s
+> For some reason it prints "Killed" after there are no more images to load. 
+> It's probably an issue with the storage of big files. Currently it stops at 100 images.
 
-```
+## 5. Split Predicted Images into Channels
 
-## 5. Generate Noise Models
+- Predictions produced by the Algorithm show the 4 channels merged in a single picture. Split the channels with:
 
-```bash
-    python generate_noise_model.py --gt_name=n2v --dataset_name=jump_cell_painting
-    python generate_noise_model.py --gt_name=n2v2 --dataset_name=jump_cell_painting
-    python generate_noise_model.py --gt_name=n2v --dataset_name=hagen
-    python generate_noise_model.py --gt_name=n2v2 --dataset_name=hagen
-    python generate_noise_model.py --gt_name=n2v --dataset_name=support
-    python generate_noise_model.py --gt_name=n2v2 --dataset_name=support
-    python generate_noise_model.py --gt_name=n2v --dataset_name=w2s
-    python generate_noise_model.py --gt_name=n2v2 --dataset_name=w2s
+``` python split_predictions_channels.py ```
 
-```
-
-## 6. Train HDN
-
-Change parameters according to noise model and dataset name to use. Remove `--memload_dataset` flag to avoid loading the whole dataset in memory if you don't have enough RAM.
-
-```bash
-    python train_hdn.py --dataset_name=hagen --noise_model=n2v --output_root=models/hdn_n2v --memload_dataset --batch_size=256 --virtual_batch=128
-```
-## Default Folder Tree Structure after running the scripts
-
-```bash
-├── models
-│   ├── hdn_n2v
-│   │   └── hagen
-│   ├── hdn_n2v2
-│   │   └── hagen
-│   └── n2v_n2v2
-│       ├── n2v2_hagen_chwise
-│       ├── n2v2_jump_cell_painting_chwise
-│       ├── n2v2_support_chwise
-│       ├── n2v2_w2s_chwise
-│       ├── n2v_hagen_chwise
-│       ├── n2v_jump_cell_painting_chwise
-│       ├── n2v_support_chwise
-│       └── n2v_w2s_chwise
-├── noise_models
-│   ├── hagen
-│   │   ├── n2v
-│   │   │   ├── GMM.npz
-│   │   │   ├── GMM.png
-│   │   │   └── histogram.npy
-│   │   └── n2v2
-│   │       ├── GMM.npz
-│   │       ├── GMM.png
-│   │       └── histogram.npy
-│   ├── jump_cell_painting
-│   │   ├── n2v
-│   │   │   ├── ...
-│   │   └── n2v2
-│   │       ├── ...
-│   ├── support
-│   │   ├── ...
-│   └── w2s
-│       ├── ...
-├── predictions
-│   ├── hagen
-│   │   ├── n2v2.tiff
-│   │   └── n2v.tiff
-│   ├── jump_cell_painting
-│   │   ├── ...
-│   ├── support
-│   │   ├── ...
-│   └── w2s
-│       ├── ...
-
-```
+> Splitting the Predictions is not needed but allows for a better comparison with the original Dataset.
