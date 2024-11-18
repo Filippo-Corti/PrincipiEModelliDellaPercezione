@@ -44,4 +44,4 @@
 [Original Article presenting N2V] https://openaccess.thecvf.com/content_CVPR_2019/papers/Krull_Noise2Void_-_Learning_Denoising_From_Single_Noisy_Images_CVPR_2019_paper.pdf \
 [ ??? ] https://proceedings.mlr.press/v97/batson19a/batson19a.pdf
 
-[Fixing N2V Problems] https://link.springer.com/chapter/10.1007/978-3-031-25069-9_33
+[Fixing N2V Problems - Pagina 525] https://link.springer.com/chapter/10.1007/978-3-031-25069-9_33
