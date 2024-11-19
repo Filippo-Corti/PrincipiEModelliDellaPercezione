@@ -48,7 +48,7 @@
 
 [Original Article presenting N2V] https://openaccess.thecvf.com/content_CVPR_2019/papers/Krull_Noise2Void_-_Learning_Denoising_From_Single_Noisy_Images_CVPR_2019_paper.pdf 
 
-[ ??? ] https://proceedings.mlr.press/v97/batson19a/batson19a.pdf
+[ Noise2Self ] https://proceedings.mlr.press/v97/batson19a/batson19a.pdf
 
 [Fixing N2V Problems - Pagina 525] https://link.springer.com/chapter/10.1007/978-3-031-25069-9_33
 
@@ -98,7 +98,9 @@ Vantaggi di N2V:
 
 Come si arriva all'Architettura di N2V:
 
-1. Perceptron
+### 1. Perceptron
+
+> IDEA: Simulate a humna neuron
 
 The perceptron is a basic neural network unit that models the functioning
 of a biological neuron. It was developed by Frank Rosenblatt in the late 1950s
@@ -128,7 +130,9 @@ https://en.wikipedia.org/wiki/Rectifier_(neural_networks)
 ]
 
 
-2. Multi-Layer Perceptron (Artifical Neural Network or Feed-Forward Neural Network)
+### 2. Multi-Layer Perceptron (Artifical Neural Network or Feed-Forward Neural Network)
+
+> IDEA: Approximate a complex function
 
 Deep Feed-Forward networks, commonly known as neural networks or multilayer perceptrons (MLPs), are considered the most representative models of
 deep learning. Feed-Forward Neural Networks are a type of artificial neural
@@ -152,7 +156,9 @@ by a directed acyclic graph that illustrates the composition of functions.
 https://www.researchgate.net/publication/369921211_Deep_Learning_Architectures
 ]
 
-3. Convolutional Neural Network
+### 3. Convolutional Neural Network
+
+> IDEA: Image Recognition and Classification
 
 Although Feed-Forward Neural Networks are capable of handling image recognition tasks, Convolutional Neural Networks (CNNs)
 are more suitable for these types of problems due to their superior performance.
@@ -203,7 +209,9 @@ https://www.geeksforgeeks.org/introduction-convolution-neural-network/
 https://www.andreaprovino.it/convolutional-neuralnetwork
 ]
 
-4. Fully Convolutional Network
+### 4. Fully Convolutional Network
+
+> IDEA: Image Semantic Segmentation
  
 CONVOLUTIONAL networks are driving advances in
 recognition. Convnets are not only improving for
@@ -300,6 +308,8 @@ FCN-32s result is very rough due to loss of location information while FCN-8s ha
 
 This fusing operation actually is just like the boosting / ensemble technique used in AlexNet, VGGNet, and GoogLeNet, where they add the results by multiple model to make the prediction more accurate. But in this case, it is done for each pixel, and they are added from the results of different layers within a model.
 
+FCN-16s and 8s pose the intuition for the U-Net skip connections
+
 
 [Check out
 https://arxiv.org/pdf/1605.06211v1
@@ -308,15 +318,311 @@ https://towardsdatascience.com/review-fcn-semantic-segmentation-eb8c9b50d2d1
 https://medium.com/@mohit_gaikwad/overview-fully-convolutional-network-for-semantic-segmentation-b4ef92eeb8c4
 ]
 
-5. U-Net
+### 5. U-Net
+
+> IDEA: Make Semantic Segmentation more effective and efficient, with less training data => Specific for Medical Datasets
+
+From the original paper:
+
+In this paper, we build upon a more elegant architecture, the so-called “fully
+convolutional network”. We modify and extend this architecture such that it
+works with very few training images and yields more precise segmentations; see
+Figure 1
+
+One important modification in our architecture is that in the upsampling
+part we have also a large number of feature channels, which allow the network
+to propagate context information to higher resolution layers. As a consequence,
+the expansive path is more or less symmetric to the contracting path, and yields
+a u-shaped architecture. The network does not have any fully connected layers
+and only uses the valid part of each convolution, i.e., the segmentation map only
+contains the pixels, for which the full context is available in the input image.
+This strategy allows the seamless segmentation of arbitrarily large images by an
+overlap-tile strategy (see Figure 2). To predict the pixels in the border region
+of the image, the missing context is extrapolated by mirroring the input image.
+This tiling strategy is important to apply the network to large images, since
+otherwise the resolution would be limited by the GPU memory.
+
+As for our tasks there is very little training data available, we use excessive
+data augmentation by applying elastic deformations to the available training images. This allows the network to learn invariance to such deformations, without
+the need to see these transformations in the annotated image corpus. This is
+particularly important in biomedical segmentation, since deformation used to
+be the most common variation in tissue and realistic deformations can be simulated efficiently. 
+
+Network Architecture:
+
+The network architecture is illustrated in Figure 1. It consists of a contracting
+path (left side) and an expansive path (right side). The contracting path follows
+the typical architecture of a convolutional network. It consists of the repeated
+application of two 3x3 convolutions (unpadded convolutions), each followed by
+a rectified linear unit (ReLU) and a 2x2 max pooling operation with stride 2
+for downsampling. At each downsampling step we double the number of feature
+channels. Every step in the expansive path consists of an upsampling of the
+feature map followed by a 2x2 convolution (“up-convolution”) that halves the
+number of feature channels, a concatenation with the correspondingly cropped
+feature map from the contracting path, and two 3x3 convolutions, each followed by a ReLU. The cropping is necessary due to the loss of border pixels in
+every convolution. At the final layer a 1x1 convolution is used to map each 64-
+component feature vector to the desired number of classes. In total the network
+has 23 convolutional layers
+
+The u-net architecture achieves very good performance on very different biomedical segmentation applications. Thanks to data augmentation with elastic deformations,
+it only needs very few annotated images and has a very reasonable training time
+
+----------
+
+From other sites:
+
+The main idea is to supplement a usual contracting network by successive layers, where pooling operations are replaced by upsampling operators. Hence these layers increase the resolution of the output. A successive convolutional layer can then learn to assemble a precise output based on this information.
+
+The other fundamental idea is Shortcut Connections
+
+La caratteristica distintiva di una rete neurale U-Net è costituita dalle così dette connessioni scorciatoia (shortcut connection).
+Per capire la loro utilità e le esigenze della loro presenza, dobbiamo fare un passo indietro.
+Nel nostro post sulle Fully Convolutional Networks abbiamo appreso che nella riduzione delle dimensioni operata dall’encoder la perdita di informazione è significativa.
+Il decoder fatica quindi a effettuare l’up-sampling con un conseguente risultato mediocre.
+Le FCN gestiscono allora la perdita di informazioni ricostruendo l’immagine e recuperando parte delle informazioni dai filtri di pooling prima della sintesi dalla feature map.
+
+Le reti U-Net propongono invece una soluzione differente.
+La struttura base rimane invariata, con due percorsi simmetrici che chiamiamo:
+- Encoder, o percorso di contrazione (contraction path) che cattura il contesto dell’immagine. È costituito da livelli di convoluzione e di max pooling al pari di una Convolutional Neural Network.
+- Decoder, o percorso di espansione (expanding path) che localizza con precisione gli elementi dell’immagine attraverso le convoluzioni trasposte (transposed convolutions).
+Ogni up-sampling layer del decoder riceve i dati dal corrispondete down sampling layer dell’encoder.
+
+In questo modo siamo in grado di catturare più informazioni contenendo la complessità computazionale.
+
+Chiaramente i livelli iniziali dell’encoder contengono più informazioni, ergo per cui garantiscono un significativo boost nel processo di up-sampling permettendo il recupero di dettagli e migliorando significativamente il risultato.
+Ecco che introduciamo le shortcut connection.
+Più nello specifico la prima shortcut connections crea un ponte tra l’encoder prima del’iniziale filtro di pooling e il decoder dopo l’ultima operazione di deconvoluzione.
+
+-----------
+
+Initially proposed as a solution to medical image segmentation problems, but it's now used in many other tasks. 
+It's particularly effective in tasks with high resolution inputs and outputs (segmantation, superresolution, diffusion models, denoising).
+They are all tasks from image to image.
+
+We generally need a set of inputs-labels to train the U-Net model. The training works as usual, randomizing parameters of the network, checking output compared to grand truth and
+finding the parameters of the U-Net that minimize the loss.
+
+ENCODER: extract features from the input image
+DECODER: upsampling intermediate features and produce the final output
+
+They are simmetrical and connected => gives the U form.
+
+Basically: I want to find X thing => I figure that this tile of the image probably has it => let me define pixel-wise what is the X thing and what is not 
+
+Connecting parts allow for the encoder features to be concatenated on to the decoder features. They are:
+- The bottleneck -> where the encoder switches to decoder => we have the biggest amount of features 
+
+- The connecting paths ("Skip Connections") -> they simply cope the simmetrical feature on the encoder part and concatenate on to the opposing stage on the decoder.
+    Decoder features include semantic information (there's a bike around there)
+    Encoder features include spatial information (these are pixels of an object)
+
+Key points to compare to a Fully Convolutional Networks:
+ - Symmetrical parts -> FCN usually has one or a couple decoder layers, U-Net has as many as the encoder
+ - Deconvolution (transposed convolution) is the standard for upsamplign in decoders in U-Nets, while FCN can use interpolation techniques and only sum the pooling layers.
+
+Performance and Data:
+
++ Low amounts of data is needed => the images are transformed making the model stronger at recognizing objects in different forms/rotations
+ U-Nets Require Less Data: It is true that U-Nets can achieve high performance with relatively smaller datasets compared to many other architectures, including Fully Convolutional Networks (FCNs). This capability is largely attributed to their architecture, which includes skip connections that help retain spatial information and enable the model to learn more robust features from fewer examples. Additionally, U-Nets often employ extensive data augmentation techniques, which artificially increase the size of the training dataset by creating variations of the existing images. This allows the model to generalize better without needing a vast number of annotated samples
+
++ FCNs, while capable of functioning with smaller datasets, may require more data to achieve similar performance levels due to their less structured approach to feature combination.
+In terms of speed, both architectures can be efficient, but U-Nets often have an edge in processing speed due to their design tailored for segmentation tasks
+
+The Loss Function is minimized by an Optimizer. One of the most used ones is ADAM.
+
+[Check out 
+https://arxiv.org/pdf/1505.04597v1
+https://www.andreaprovino.it/u-net
+https://stackoverflow.com/questions/50239795/intuition-behind-u-net-vs-fcn-for-semantic-segmentation
+]
+
+### 6. N2V
+
+> IDEA: Apply Denoising with no data other than the noisy image we want to denoise.
+
+Here, we introduce
+NOISE2VOID (N2V), a training scheme that takes this idea
+one step further. It does not require noisy image pairs, nor
+clean target images. Consequently, N2V allows us to train
+directly on the body of data to be denoised and can therefore
+be applied when other methods cannot. Especially interesting is the application to biomedical image data, where
+the acquisition of training targets, clean or noisy, is frequently not possible.
+
+N2N training requires the availability of pairs of noisy images, and
+the acquisition of such pairs with (quasi) constant s is
+only possible for (quasi) static scenes.
+
+While it cannot be expected that our approach outperforms methods that
+have additional information available during training, we
+observe that the denoising performance of our results only
+drops moderately and is still outperforming BM3D.
+
+N2V is a self-supervised training method. In this work
+we make two simple statistical assumptions: 
+(i) the signal s is not pixel-wise independent, 
+(ii) the noise n is conditionally pixel-wise independent given the signal s
+
+In other words, if we were to acquire multiple images with
+the same signal, but different realizations of noise and average them, the result would approach the true signal
+
+Another assumption for mathematical proof of the algorithm: E[N] = 0, the expected value of the noise is zero.
+This allows to generate clean data from only noisy images.
+When E[N]=0 is a Valid Assumption:
+Gaussian Noise:
+Many denoising frameworks assume Gaussian noise, where noise is drawn from a normal distribution 
+𝑁∼𝑁(0,𝜎2)
+In this case:
+E[N]=0
+This is a common model because it works well in many practical settings, such as sensor noise in images.
+
+Random, Uncorrelated Noise:
+Even if the noise isn’t strictly Gaussian, it might still be random and centered around zero, especially in systems where errors arise from many independent small effects (per the Central Limit Theorem).
+
+Applications That Justify It:
+In microscopy or imaging systems, noise often arises from physical processes (e.g., photon counting noise, electronic sensor noise) and is modeled effectively as zero-mean.
+
+Here, we go a step further. We propose to derive both
+parts of our training sample, the input and the target, from
+a single noisy training image x
+j
+. If we were to simply extract a patch as input and use its center pixel as target, our
+network would just learn the identity, by directly mapping
+the value at the center of the input patch to the output
+Figure 2 a).
+
+
+-----------
+
+The Training:
+
+
+To understand how training from single noisy images is
+possible nonetheless, let us assume that we use a network
+architecture with a special receptive field. We assume the
+receptive field x˜RF(i) of this network to have a blind-spot
+in its center. The CNN prediction sˆi for a pixel is affected
+2132
+by all input pixels in a square neighborhood except for the
+input pixel xi at its very location. We term this type of
+network blind-spot network (see Figure 2 b)
+
+The blindspot network has a little bit less information available for
+its predictions, and we can expect its accuracy to be slightly
+impaired compared to a normal network
+The essential advantage of the blind-spot architecture is
+its inability to learn the identity. Let us consider why this
+is the case. Since we assume the noise to be pixel-wise
+independent given the signal (see Eq. 3), the neighboring
+pixels carry no information about the value of ni
+. It is thus
+impossible for the network to produce an estimate that is
+better than its a priori expected value (see Eq. 4).
+The signal however is assumed to contain statistical dependencies (see Eq. 2). As a result, the network can still
+estimate the signal si of a pixel by looking at its surroundings.
+
+We have seen that a blind-spot network can in principle be trained using only individual noisy training images.
+However, implementing such a network that can still operate efficiently is not trivial. We propose a masking scheme
+to avoid this problem and achieve the same properties with
+any standard CNN: We replace the value in the center of
+each input patch with a randomly selected value form the
+surrounding area (see supplementary material for details).
+This effectively erases the pixel’s information and prevents
+the network from learning the identity.
+
+If we implement the above training scheme naively, it
+is unfortunately still not very efficient: We have to process
+an entire patch to calculate the gradients for a single output pixel. To mitigate this issue, we use the following approximation technique: Given a noisy training image xi
+, we randomly extract patches of size 64 × 64 pixels, which are
+bigger than our networks receptive field (see supplementary
+material for details). Within each patch we randomly select
+N pixels, using stratified sampling to avoid clustering. We
+then mask these pixels and use the original noisy input values as targets at their position (see Figure 3). Further details
+on the masking scheme can be found in the supplementary
+note. We can now simultaneously calculate the gradients
+for all of them, while ignoring the rest of the predicted image. 
+
+-------
+
+Other sources:
+
+Objective
+The goal of N2V is to predict a clean signal using a noisy image as both the input and the target, without relying on a paired clean image. To make this work, N2V uses masking and stratified sampling to train efficiently while ensuring the network does not overfit to the noise.
+
+Key Challenges
+Inefficiency:
+Naively training the network to compute gradients for a single pixel (output) requires processing the entire patch, which is computationally expensive.
+Risk of Overfitting to Noise:
+Using the same pixel for input and target may allow the network to "memorize" noise instead of denoising.
+The Training Scheme
+Extracting Random Patches:
+
+From a noisy image xi, random patches of size 
+64×64 are sampled during training.
+These patches must be larger than the network's receptive field to ensure that the network's predictions for each pixel only depend on information within the patch. This prevents "leakage" of masked information back into the predictions.
+Stratified Sampling:
+
+Within each patch, a subset of 
+N pixels is chosen randomly for training.
+Stratified sampling ensures that the selected pixels are distributed across the patch rather than being clustered together. This improves generalization by training on a diverse set of spatial locations.
+Masking Scheme:
+
+The 
+N selected pixels are masked during training, meaning their values are replaced with dummy values (often zero or a neighboring pixel's value) in the input patch.
+The network's goal is to predict the original (noisy) value of the masked pixels, which acts as the target.
+Masking forces the network to infer the missing pixel value based on its neighbors, effectively learning to model the underlying clean signal.
+Gradient Calculation:
+
+The network predicts the values for all 
+N masked pixels simultaneously, allowing for efficient gradient computation.
+The loss is only calculated for the 
+N masked pixels, ignoring the rest of the patch.
+Batch-Wise Processing:
+
+This approach allows multiple masked pixels in a single patch to be used for training in parallel, significantly improving efficiency compared to processing each pixel individually.
+Why Masking and Stratified Sampling?
+Masking ensures the network doesn't "see" the original value of a pixel, so it cannot directly memorize noise. Instead, the network learns to use neighboring information to estimate the clean signal.
+Stratified sampling avoids redundant information (e.g., clustered pixels) and ensures diverse gradient updates.
+
+Benefits of This Approach
+Efficiency:
+By masking 
+N pixels in one patch, the network processes them simultaneously, making the computation faster.
+Robust Learning:
+Using stratified sampling and diverse patches ensures the network learns a generalized mapping and does not overfit to specific noise patterns.
+
+You are correct that in the Noise2Void (N2V) framework, the original noisy value of the masked pixel is used as the "ground truth" during training. This raises an important question: if the pixel's value is part of the noise, does the model inadvertently learn to reproduce the noise?
+Since the expectation of the noise is zero, over many examples, the network learns to infer the clean signal 
+x*, rather than reproducing the noise.
+
+As opposed to supervised approaches, where the loss is computed with respect to a known ground truth, N2V computes the loss based on a noisy signal. At the beginning of the training the network usually learns within a few epochs an approximation of the structures in the image and the loss decreases sharply. Then, it rapidly reaches a plateau and oscillates around a particular loss value.
+
+Because the loss is computed between prediction and noisy signal, its absolute value is not informative for whether the network is properly trained. Likewise, oscillation on the plateau does not indicate that it does not learn anymore.
+The best way to assess the quality of the training is to look at the denoised images, potentially at different points during training, using the checkpoints. In practice, we often simply train long enough for the image to look properly denoised!
+
+
+Why do N2V predictions sometimes look blurry?
+The absence of noise can by itself make images look slightly blurry. If some regions of your data look unreasonably blurry, you might be encountering the a case of regression to the mean.
+
+For each noisy image, we often say that there is a whole distribution of possible denoised images. In particular, for strongly degraded images, even different structures can produce the same noisy patch.
+
+Because of this, a network trained with the mean squared error, such as N2V, will tend to predict the average of all possible denoised images. This is why the prediction can often look blurry and washed out. For approaches that predict single instances from the distribution of possible denoised images, check out DivNoising or HDN.
+
+Intuition for N2V Behavior
+The masked pixels are used to guide the network to understand the general noise-to-signal mapping.
+Over time, as the network learns, its predictions for both masked and unmasked pixels improve.
+By the end of training, the network can denoise the entire image effectively, even though the loss was calculated only on a subset of pixels.
+
+## Il Nostro Modello per N2V Denoising
+
+// Check out parameters from the config, explain what they do and how they impact the result
+
+## Run our Model on BSD68 to see what happens
+
+## Create a Small DEMO for a single image and a model trained on it on a Jupiter Notebook
 
 
 
-6. N2V
-
-Utilizza una U-Net particolare con:
-
-- ReLu
-- ADAM Optimization
-- 
-
+[Check out
+https://openaccess.thecvf.com/content_CVPR_2019/papers/Krull_Noise2Void_-_Learning_Denoising_From_Single_Noisy_Images_CVPR_2019_paper.pdf
+https://careamics.github.io/0.1/algorithms/Noise2Void/
+]
