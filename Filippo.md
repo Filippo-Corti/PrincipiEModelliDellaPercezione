@@ -543,6 +543,16 @@ By the end of training, the network can denoise the entire image effectively, ev
 
 // Check out parameters from the config, explain what they do and how they impact the result
 
+Adam Optimizer = ottimizzatore per l'algoritmo di discesa del gradiente.
+fondamentalmente prevede:
+- Nuovi parametri ricalcolati ogni batch (dunque dipende dal batch_size)
+- si segue un principio di "Momentum", per cui viene data maggiore importanza ad alfa*gradient piuttosto che al minimo precedente 
+- si sceglie di cambiare dinamicamente il learning rate per ogni parametro e ogni istante di esecuzione dell'algoritmo
+
+è considerato il migliore perché rapido e adatto anche a dataset molto grandi
+
+more at https://towardsdatascience.com/optimizers-for-training-neural-network-59450d71caf6 
+
 ## Run our Model on BSD68 to see what happens
 
 ## Create a Small DEMO for a single image and a model trained on it on a Jupiter Notebook
