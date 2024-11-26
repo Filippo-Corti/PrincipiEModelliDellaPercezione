@@ -541,17 +541,133 @@ By the end of training, the network can denoise the entire image effectively, ev
 
 ## Il Nostro Modello per N2V Denoising
 
-// Check out parameters from the config, explain what they do and how they impact the result
+### Configurazione:
 
-Adam Optimizer = ottimizzatore per l'algoritmo di discesa del gradiente.
-fondamentalmente prevede:
-- Nuovi parametri ricalcolati ogni batch (dunque dipende dal batch_size)
-- si segue un principio di "Momentum", per cui viene data maggiore importanza ad alfa*gradient piuttosto che al minimo precedente 
-- si sceglie di cambiare dinamicamente il learning rate per ogni parametro e ogni istante di esecuzione dell'algoritmo
+{'algorithm_config': {'algorithm': 'n2v',
+                      'loss': 'n2v',
+                      'lr_scheduler': {'name': 'ReduceLROnPlateau',
+                                       'parameters': {}},
+                      'model': {'architecture': 'UNet',
+                                'conv_dims': 2,
+                                'depth': 2,
+                                'final_activation': 'None',
+                                'in_channels': 4,
+                                'independent_channels': True,
+                                'n2v2': False,
+                                'num_channels_init': 32,
+                                'num_classes': 4},
+                      'optimizer': {'name': 'Adam',
+                                    'parameters': {'lr': 0.0001}}},
+ 'data_config': {'axes': 'SCYX',
+                 'batch_size': 32,
+                 'data_type': 'array',
+                 'patch_size': [64, 64],
+                 'transforms': [{'flip_x': True,
+                                 'flip_y': True,
+                                 'name': 'XYFlip',
+                                 'p': 0.5},
+                                {'name': 'XYRandomRotate90', 'p': 0.5},
+                                {'masked_pixel_percentage': 0.2,
+                                 'name': 'N2VManipulate',
+                                 'roi_size': 11,
+                                 'strategy': 'uniform',
+                                 'struct_mask_axis': 'none',
+                                 'struct_mask_span': 5}]},
+ 'experiment_name': 'n2v_jump_cell_painting_chwise',
+ 'training_config': {'checkpoint_callback': {'auto_insert_metric_name': False,
+                                             'mode': 'min',
+                                             'monitor': 'val_loss',
+                                             'save_last': True,
+                                             'save_top_k': 3,
+                                             'save_weights_only': False,
+                                             'verbose': False},
+                     'num_epochs': 100},
+ 'version': '0.1.0'}
 
-è considerato il migliore perché rapido e adatto anche a dataset molto grandi
+ASPETTI DEGNI DI NOTA:
 
-more at https://towardsdatascience.com/optimizers-for-training-neural-network-59450d71caf6 
+1. Optimizer & LR-Scheduler
+2. Model
+3. DataConfig
+4. TrainingConfig
+
+#### 1. Adam Optimizer con ReduceLROnPlateau
+
+Optimizers are algorithms or methods used to change the attributes of your neural network such as weights and learning rate in order to reduce the losses.
+
+Tutti gli Ottimizzatori si basano sull'Algoritmo di Discesa del Gradiente. Data una funzione (nel nostro caso la Loss Function, ad esempio una MSE) avente un certo numero di incognite (nel nostro caso le incognite sono i parametri del modello), vogliamo trovare i valori per quelle incognite che minimizzano la funzione.
+Intuitivamente il minimo richiede il calcolo della derivata prima, dunque l'algoritmo procede così:
+- Inizia da un punto a caso x0.
+- Calcola il gradiente nel punto x0, ovvero calcola la derivata prima della funzione in x0. 
+    Se gradiente > 0, la funzione sta salendo in quel punto: vogliamo ridurre x0, spostandoci verso sinistra.
+    Se gradiente < 0, la funzione sta scendendo in quel punto: vogliamo aumentare x0, spostandoci verso destra.
+- x1 è calcolata come x1 = x0 - mu * gradient(x0), dove mu è il Learning Rate.
+    Un Learning Rate alto significa che la nostra discesa del gradiente fa grandi salti ad ogni iterazione, convergendo più velocemente ma potenzialmente mancando il punto di minimo.
+    Un Learning Rate basso significa che la nostra discesa del gradiente fa piccoli salti ad ogni iterazione, convergendo più lentamente ma garantendo, nel tempo, un'approssimazione migliore del minimo.
+
+L'Algoritmo può terminare in due modi:
+- La differenza tra x_i+1 ed x_i è molto bassa. Si sospetta in questo caso che si sia giunti al minimo.
+- L'Algoritmo termina il numero di iterazioni a sua disposizione.
+
+Nel caso di funzioni a più parametri, si utilizzano Derivate Parziali.
+
+Gli Ottimizzatori si distinguono per il modo in cui implementano l'Algoritmo di Gradient Descent. 
+Una misura che li differnzia è quando questo algoritmo viene eseguito, durante il training:
+- Se viene eseguito una sola volta, quando tutti gli input sono stati passati nella rete, si tratta di una Discesa del Gradiente "tradizionale" o "Batch Gradient Descent" (BGD).
+ Il suo problema è, a livello computazionale, una alta richiesta di memoria, mentre in generale rappresenta una rete chiaramente poco dinamica (cambia solo alla fine i suoi parametri)
+- Se viene eseguito ad ogni input, si tratta di una Discesa del Gradiente Stocastica (SGD). Dobbiamo in questo caso adattare un po' l'algoritmo, poiché se esso converge al minimo ad ogni esecuzione
+ finiamo per trovare i parametri che minimizzano solamente l'ultimo input. Per farlo si utilizzano:
+    - parametri aggiuntivi, che osservano come il gradiente varia (intutivamente, possiamo immaginare derivazioni
+        di secondo grado)
+    - learning rate variabile. Intuitivamente, un LR più piccolo su un numero limitato di iterazioni consente, in una esecuzione dell'algoritmo,
+        solo una certa variazione contenuta al valore dei parametri. Man mano che andiamo avanti, riduciamo il Learning Rate consentendo alla rete di stabilizzarsi.
+- Se viene eseguito ogni volta che un certo numero di input viene passato nella rete, si tratta di una "Mini-Batch Gradient Descent".
+ Sono necessarie anche qui tutte le tecniche descritte in precedenza. La dimensione del "mini_batch" è specificata tipicamente come batch_size nell'Algoritmo.
+ La scelta del Batch Size influenza le prestazioni dell'Algoritmo e deve avvenire coerentemente con la quantità di memoria RAM disponibile nel sistema.
+
+ .... Ci sono tutta una serie di Ottimizzatori che introducono parametri aggiuntivi e fanno cose complicate ....
+
+L'Ottimizzatore più utilizzato, riconosciuto come migliore, è l'Adam Optimizer. 
+ADAM = Adaptive Momentum Estimation
+In molta sintesi, poiché i dettagli non c'è tempo di presentarli, combina questi comportamenti:
+- Mini-Batch, dunque viene eseguito ogni batch_size.
+- "Momentum", It accelerates the convergence towards the relevant direction and reduces the fluctuation to the irrelevant direction.
+    Utilizzando un parametro gamma di "Momentum", che agisce così nella formula di aggiornamento:
+     x_i+1 = gamma*x_i + lr \* gradient(x_i)
+    In pratica gamma = 0.9 circa e dunque x_i ha una importanza leggermente ridotta, dando più importanza all'ultima rilevazione.
+- Learning Rate adattivo, per i motivi descritti sopra. In particolare ogni parametro ha un proprio Learning Rate, rendendo la cosa ancora più accurata.
+
+Nel concreto, ADAM si porta in giro due Medie Mobili (Moving Averages), degli ultimi gradienti e degli ultimi gradienti^2. 
+Tramite queste due Moving Averages applica il Momentum e stabilisce come variare il Learning Rate per ogni parametro. 
+
+++ Efficient and Scalable:
+
+Works well for large datasets and high-dimensional parameter spaces.
+Performs well out-of-the-box with minimal hyperparameter tuning.
+
+LRPLATEAU:
+Nella nostra configurazione, l'LR_Scheduler si occupa di stabilire come deve variare il Learning Rate. Intuitivamente quando un certo parametro raggiunge un "plateau", l'LR è ridotto.
+
+Monitor Progress: The scheduler tracks a specific metric (e.g., validation loss).
+Detect Plateaus: If the metric doesn’t improve for a specified number of epochs (the "patience"), the scheduler reduces the learning rate by a factor.
+Improve Training Stability: A lower learning rate allows for more fine-tuned adjustments to parameters, especially helpful during the later stages of training when the model is close to convergence.
+
+Example Scenario
+Let’s say you’re training a neural network:
+
+Initial learning rate: 0.01
+Patience: 3 epochs
+Factor: 0.1
+If the validation loss hasn’t improved after 3 consecutive epochs, the learning rate will be reduced to 0.01×0.1=0.001.
+
+
+
+[Check out 
+https://towardsdatascience.com/optimizers-for-training-neural-network-59450d71caf6 
+https://arxiv.org/pdf/1412.6980
+]
+
+
 
 ## Run our Model on BSD68 to see what happens
 
