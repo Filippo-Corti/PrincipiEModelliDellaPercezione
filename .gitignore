@@ -6,4 +6,5 @@ datasets/
 *.code-workspace
 lightning_logs/
 predictions/
+notebooks/
 *.ckpt
