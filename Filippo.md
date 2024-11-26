@@ -539,6 +539,13 @@ The masked pixels are used to guide the network to understand the general noise-
 Over time, as the network learns, its predictions for both masked and unmasked pixels improve.
 By the end of training, the network can denoise the entire image effectively, even though the loss was calculated only on a subset of pixels.
 
+
+[Check out
+https://openaccess.thecvf.com/content_CVPR_2019/papers/Krull_Noise2Void_-_Learning_Denoising_From_Single_Noisy_Images_CVPR_2019_paper.pdf
+https://careamics.github.io/0.1/algorithms/Noise2Void/
+]
+
+
 ## Il Nostro Modello per N2V Denoising
 
 ### Configurazione:
@@ -661,11 +668,132 @@ Factor: 0.1
 If the validation loss hasn’t improved after 3 consecutive epochs, the learning rate will be reduced to 0.01×0.1=0.001.
 
 
-
 [Check out 
 https://towardsdatascience.com/optimizers-for-training-neural-network-59450d71caf6 
 https://arxiv.org/pdf/1412.6980
 ]
+
+#### 2. Model
+
+'architecture': 'UNet' -> Model is a U-Net, for the reasons we know of.
+
+'conv_dims': 2 -> The Model performs 2D Convolutions, which is expected when working with 2D input signals like images.
+
+'depth': 2 -> The Model performs 2 levels of down-sampling in the encoder and 2 corresponding up-sampling levels in the decoder. This is standard for the U-Nets and makes
+    for a compact and efficient network. More layers are only needed if there's need to capture more complex featuresm which is not our case.
+
+'final_activation': 'None' -> At the end of the processing, the Model doesn't apply any Activation Function. This is tipical for tasks like denoising, as the result is an image and not a prediction.
+    In neural networks that need to give a probabilistic prediction as output (between 0 and 1), a Final Activation function like Sigmoid or Softmax is usually applied at the end.
+
+'in_channels': 4 -> The 4 channels that describe our dataset images (RGB + A)
+'num_classes': 4 -> Matches the 4 input channels, meaning that denoising is applied to all 4 channels and the result is also 4 channels, denoised
+'independent_channels': True -> It means that the channels are processed independently, that is using separate feature maps. Looking at the diversity of our channels, it makes sense to work separately.
+
+'n2v2': False -> The Model applies N2V and not its modified version N2V2 (more on that later?)
+
+'num_channels_init': 32 -> This number corresponds to the feature map size. Tipically, every level the number doubles so we shuold expect
+
+In a U-Net with depth = 2 and num_channels_init = 32, the down-sampling process involves reducing the spatial dimensions of the input while increasing the number of feature channels. Here's how it works step-by-step:
+
+Down-sampling in U-Net (Depth = 2)
+Initial Input:
+
+Assume the input is a 2D image with dimensions (H, W) and 4 channels (as in_channels = 4).
+Example: Input shape is (H, W, 4).
+Initial Convolution:
+
+The input is passed through the first convolutional layer, which applies 32 filters (num_channels_init = 32).
+
+The output feature map has dimensions:
+
+Spatial size: Still (H, W) (if padding is applied to preserve dimensions).
+Channels: 32.
+After this layer:
+
+Shape: (H, W, 32).
+Level 1 (First Down-sampling Step):
+Down-sampling:
+
+Down-sampling is typically performed using max-pooling (e.g., with a 2×2 kernel and stride 2).
+This reduces the spatial dimensions by half:
+Spatial size: From (H, W) → (H/2, W/2).
+The number of channels remains the same: 32.
+Convolution:
+
+Another convolutional layer is applied after down-sampling.
+The number of channels increases (doubles) as per U-Net design:
+From 32 → 64.
+Output of Level 1:
+
+Shape: (H/2, W/2, 64).
+Level 2 (Second Down-sampling Step):
+Down-sampling:
+
+Max-pooling is applied again, halving the spatial dimensions:
+From (H/2, W/2) → (H/4, W/4).
+The number of channels remains 64.
+Convolution:
+
+Another convolutional layer is applied, doubling the channels again:
+From 64 → 128.
+Output of Level 2:
+
+Shape: (H/4, W/4, 128).
+
+Summary of Down-sampling Stages
+Level	    Spatial Dimensions	     Channels
+Input	    (H, W)	                 4
+Level 0	    (H, W)	                 32
+Level 1	    (H/2, W/2)	             64
+Level 2	    (H/4, W/4)	             128
+
+#### 3. DataConfig
+
+'axes': 'SCYX' -> This is the shape of our training data:
+    S = Sample Axis, aka the number of imags
+    C = Channel Axis, aka the number of channels
+    Y = Spatial Height of the image
+    X = Spatial Width of the image
+Our Training Data has a shape of: (413, 4, 540, 540)
+Our Validation Data has a shape of: (104, 4, 540, 540)
+
+'batch_size': 32 -> This is the number of samples per batches, so the number of images that are being processed in parallel during a single pass, before we update the model params (see optmizer)
+    It's one of the numbers we manually chose when running the training for the model. 32 is a balanced, common choice when memory is somewhat limited.
+
+'data_type': 'array' -> This is simply the format of the data, in our case numpy arrays.
+
+'patch_size' : [64, 64] -> This defines the size of the patches in which the input images are divided during processing. It's an usual practice for training as it reduces memory requirements and
+    allows for a more local processing. The choice of 64x64 is in line with the patch size specified for masking in the official N2V Algorithm document
+
+TRANSFORMATIONS: U-Nets apply data augmentation techniques to train the model's robustness and generalization. In our configs, transforms describe the operations the input images are subject to before the processing.
+    In our case:
+        1. As standard for U-Nets, we flip on both axis. This increases the variety of input images without needing more data.
+        2. As standard for U-Nets, we rotate the image by 0, 90, 180 or 270 degrees. Rotations introduce orientation invariance, helping the model generalize better.
+        3. N2VManipulate is the specific masking transformation described in the N2V Algoritm. Details are below
+
+            N2VManipulate: This is a key transformation specific to the Noise2Void (N2V) approach.
+            masked_pixel_percentage: 0.2
+            During training, 20% of the pixels in the patch are masked (replaced) for the self-supervised learning task.
+            roi_size: 11
+            Refers to the size of the Region of Interest (ROI) around the masked pixel that is used as context for predicting the missing value.
+            strategy: 'uniform'
+            Specifies how pixels are selected for masking:
+            Uniform means pixels are chosen randomly from the patch.
+            struct_mask_axis: 'none'
+            Indicates that no specific axis is structured for masking (i.e., masking is isotropic/random).
+            struct_mask_span: 5
+            Defines the span of structured masking if struct_mask_axis were set (unused here due to 'none').
+
+
+#### 4. TrainingConfig
+
+This is the least interesting part of the configuration. It explains the form of the output of the training, in particular its checkpoints.
+Basically, a certain metric (Val_loss, calculated on the Validation Dataset) is monitored and when it reaches a local minimum the state of the model (that is, the value of its params)
+is saved in a "checkpoint" file. 
+From the training are saved the best 3 checkpoints + the final model
+
+'num_epochs': 100 -> This is the number of complete passes, that is the number of times the entire dataset is passed through the network for training.
+    This is the second parameter we manually specify, as it depends on how much time you are willing to wait for a result and how performant you want your model to be
 
 
 
@@ -673,9 +801,3 @@ https://arxiv.org/pdf/1412.6980
 
 ## Create a Small DEMO for a single image and a model trained on it on a Jupiter Notebook
 
-
-
-[Check out
-https://openaccess.thecvf.com/content_CVPR_2019/papers/Krull_Noise2Void_-_Learning_Denoising_From_Single_Noisy_Images_CVPR_2019_paper.pdf
-https://careamics.github.io/0.1/algorithms/Noise2Void/
-]
