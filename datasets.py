@@ -4,8 +4,8 @@ import sys
 import aiohttp
 import os
 import numpy as np
-
 import yaml
+
 import tifffile as tiff
 import logging as log
 log.basicConfig(level=log.INFO)

@@ -799,5 +799,16 @@ From the training are saved the best 3 checkpoints + the final model
 
 ## Run our Model on BSD68 to see what happens
 
+Reference: https://careamics.github.io/0.1/applications/Noise2Void/BSD68/
+https://github.com/bnsreenu/python_for_microscopists/blob/master/293_denoising_RGB_images_using_deep%20learning.ipynb
+
+I want to:
+
+- Create a library folder with ALL and ONLY the functions I need for the Notebooks
+- Create a Notebook for the training and prediction of the JUMP Cell Database
+- Create a Notebook for the training and prediction of the BSD68 Training
+- Create a Notebook for the training and prediction of 1 single BSD68 image, for presentation
+
+
 ## Create a Small DEMO for a single image and a model trained on it on a Jupiter Notebook
 
