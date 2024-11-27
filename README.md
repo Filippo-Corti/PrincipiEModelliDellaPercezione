@@ -17,7 +17,7 @@ The network implements the Noise2Void (N2V) algorithm, as available through the 
 
 ## Steps to Reproduce
 
-## 1. Setup a Virtual Environment using Anaconda 
+### 1. Setup a Virtual Environment using Anaconda 
 
 - Make sure Python and Anaconda ("conda") are installed and working.
 - Setup the Conda Environment:
@@ -28,7 +28,7 @@ The network implements the Noise2Void (N2V) algorithm, as available through the 
 
     ``` pip install -r requirements.txt ```
 
-## 2. Run the scripts
+### 2. Run the scripts
 
 - Follow the Jupyter Notebooks to Train the Model and Generate some Predictions:  
 
