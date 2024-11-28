@@ -19,7 +19,7 @@ Il metodo si distingue per la capacità di rimuovere il rumore utilizzando immag
 1.	*Denoising non supervisionato*: La competizione si concentra su tecniche che non richiedono immagini pulite per l'addestramento, rendendole adatte a contesti, come questo, dove raccogliere dati di riferimento è difficile o costoso.
  2.	*Applicazioni pratiche*: Migliorare la qualità delle immagini di microscopia per analisi successive come segmentazione, classificazione o estrazione di caratteristiche.
 
-### Struttura del challenge ??????????
+### Struttura del challenge (AGGIUNGERE)
 I partecipanti applicano algoritmi su dataset biologici standardizzati.
 Le performance sono valutate utilizzando metriche come PSNR (Peak Signal-to-Noise Ratio) e SSIM (Structural Similarity Index).
 I metodi proposti vengono confrontati con approcci tradizionali e di nuova generazione per identificare le soluzioni migliori.
@@ -45,7 +45,10 @@ Un *numero maggiore di epoch* e consente al modello di convergere meglio, miglio
 Per quanto riguarda la *dimensione del batch*, utilizzare batch più grandi può velocizzare il processo di addestramento, ma richiede una maggiore quantità di memoria. Valori comuni per il batch size sono 16 o 32. 
 L’ottimizzazione di questi parametri, applicata a dataset di microscopia, ha dimostrato di migliorare significativamente metriche come il rapporto segnale-rumore (PSNR) e l’indice di somiglianza strutturale (SSIM), che misurano la qualità delle immagini denoised rispetto a quelle originali.
 
-## Difetti del N2V e possibili risoluzioni
+++ AGGIUNGERE IMMAGINI DIFFERENZA TRA EPOCHE !!
+
+
+## Difetti del N2V e possibili risoluzioni (PARALRE DI N2V2 (gli altri lascia stare))
 ### Limitazioni
 N2V può introdurre artefatti in immagini con dettagli complessi, poiché il suo approccio ignora i pixel vicini durante l'addestramento. Inoltre, non gestisce bene il rumore strutturato, che presenta correlazioni tra i pixel.
 
@@ -56,14 +59,17 @@ N2V può introdurre artefatti in immagini con dettagli complessi, poiché il suo
 
 Nonostante alcune limitazioni, N2V è efficace per il denoising non supervisionato, e queste strategie ne estendono l’applicabilità in ambiti complessi come la microscopia biologica.
 
-#### N2V2???
+#### N2V2??? --> 
+--> PROBLEMA N2V BLURRY IMAGES 
+--> CAREamics noise to void overview https://careamics.github.io/0.1/algorithms/Noise2Void/
+++ file:///C:/Users/carlo/Downloads/978-3-031-25069-9.pdf pag 525 !!!!
 
 https://ai4life-mdc24.grand-challenge.org/
 https://ai4life-mdc24.grand-challenge.org/useful-links/
 
 
 # Il Rumore
-Cos'è il Rumore:
-•   Come si forma
-•   Come si classifica
+Cos'è il Rumore:  
+* Come si forma
+* Come si classifica
 
