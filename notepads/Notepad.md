@@ -32,7 +32,17 @@
     - Risultati con diversi valori per epochs e batch_size
     - Difetti del N2V e possibili risoluzioni
 
-- Come l'N2V si ispira al nostro Sistema Nervoso nella Vista.
+- Come l'N2V si ispira al nostro Sistema Nervoso nella Vista:
+    - "Noise is any type of random, troublesome, problematic, or unwanted signals"
+        -> Sebbene i nostri occhi si siano evoluti per consentire una visione molto più precisa e sofisticata di quella che un sensore elettronico può offrire, pertanto non soffrono del fenomeno del "Rumore" nel suo significato strettamente tecnico, la nostra vista è quotidianamente invasa da "Rumore" nel senso più generale di elementi di disturbo rispetto a ciò che realmente vogliamo vedere.
+    - N2V utilizza:
+        - Il contesto dell'immagine per riuscire a ricostruirne una sua porzione, eliminando il rumore di sottofondo. Per farlo, simula il Blind Spot del nostro occhio. Pensando all'esperimento del puntino nero per osservare il comportamento del nostro cervello rispetto al Punto Cieco, vediamo che tale puntino (il nostro rumore) scompare quando posizionamo i nostri occhi in modo da far riflettere la sua immagine nel Punto Cieco della retina. L'idea è esattamente la stessa per il N2V.
+        - N2V utilizza l'Apprendimento, come ogni Rete Neurale. Quando la nostra visione vuole rimuovere il "rumore" da una scena cercare di estrarre il soggetto osservato sulla base della sua memoria. Sappiamo infatti che la percezione si forma come combinazione di ciò che vediamo e ciò che sappiamo (top-down e bottom-up proessing).
+
+    [Fonti utili:
+        https://www.sciencedirect.com/science/article/pii/S0960982200003717
+        https://pmc.ncbi.nlm.nih.gov/articles/PMC3763154/
+    ]
 
 # B. Risorse
 
