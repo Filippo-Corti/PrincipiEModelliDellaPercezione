@@ -5,24 +5,20 @@ N2V in pratica:
     - Difetti del N2V e possibili risoluzioni
 
 # Noise2Void (N2V):
-(
-## N2V intro breve ?? no
-*Noise2Void (N2V)* è una tecnica innovativa di denoising basata sul deep learning, progettata per migliorare immagini rumorose senza richiedere dati puliti per l'addestramento.
-)
+
 
 ## Grand Challenge
 N2V è stato applicato in vari contesti, tra cui il *AI4Life Microscopy Denoising Challenge*, una competizione internazionale mirata al miglioramento delle immagini di microscopia, spesso affette da rumore (strutturato o non strutturato). 
 
-Il metodo si distingue per la capacità di rimuovere il rumore utilizzando immagini rumorose senza necessità di dati puliti per l'addestramento. Questo approccio è particolarmente utile per le applicazioni biologiche, dove ottenere immagini di riferimento prive di rumore è spesso difficile.
+La challenge si concentra sul miglioramento della qualità delle immagini microscopiche biologiche riducendo il rumore senza comprometterne i dettagli o l'integrità visiva. I partecipanti sono invitati a sviluppare e applicare algoritmi avanzati su dataset standardizzati, contenenti immagini provenienti da diverse sorgenti biologiche. 
+Ogni dataset include un riferimento (ground truth) per consentire una valutazione oggettiva dei risultati.
+Il metodo si distingue per la capacità di rimuovere il rumore utilizzando immagini rumorose senza necessità di dati puliti per l'addestramento, rendendole adatte a contesti, come questo, dove raccogliere dati di riferimento è difficile o costoso.
 
-### Obiettivi principali
-1.	*Denoising non supervisionato*: La competizione si concentra su tecniche che non richiedono immagini pulite per l'addestramento, rendendole adatte a contesti, come questo, dove raccogliere dati di riferimento è difficile o costoso.
- 2.	*Applicazioni pratiche*: Migliorare la qualità delle immagini di microscopia per analisi successive come segmentazione, classificazione o estrazione di caratteristiche.
-
-### Struttura del challenge (AGGIUNGERE)
+### Struttura del challenge
 I partecipanti applicano algoritmi su dataset biologici standardizzati.
-Le performance sono valutate utilizzando metriche come PSNR (Peak Signal-to-Noise Ratio) e SSIM (Structural Similarity Index).
-I metodi proposti vengono confrontati con approcci tradizionali e di nuova generazione per identificare le soluzioni migliori.
+Le performance degli algoritmi sono valutate attraverso metriche riconosciute, come il *Peak Signal-to-Noise Ratio (PSNR)*, che misura quanto l'immagine denoised si avvicina all'originale in termini di fedeltà, e il *Structural Similarity Index (SSIM)*, che analizza la somiglianza strutturale tra le due immagini.
+![alt text](image.png)
+I risultati dei partecipanti sono poi confrontati con approcci tradizionali e di nuova generazione, consentendo di identificare le soluzioni più efficaci. 
 
 ### Perché usare N2V in questo contesto?
 Noise2Void (N2V) è particolarmente adatto per il contesto del challenge per le seguenti ragioni:
