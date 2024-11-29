@@ -17,8 +17,14 @@ Il metodo si distingue per la capacità di rimuovere il rumore utilizzando immag
 ### Struttura del challenge
 I partecipanti applicano algoritmi su dataset biologici standardizzati.
 Le performance degli algoritmi sono valutate attraverso metriche riconosciute, come il *Peak Signal-to-Noise Ratio (PSNR)*, che misura quanto l'immagine denoised si avvicina all'originale in termini di fedeltà, e il *Structural Similarity Index (SSIM)*, che analizza la somiglianza strutturale tra le due immagini.
-![alt text](image.png)
 I risultati dei partecipanti sono poi confrontati con approcci tradizionali e di nuova generazione, consentendo di identificare le soluzioni più efficaci. 
+
+#### PSNR
+![alt text](image.png)
+* Dove MAX: Rappresenta il valore massimo dell'intensità dei pixel nelle immagini microscopiche.
+* MSE (Mean Squared Error): È l'errore quadratico medio tra l'immagine originale (ground truth) e quella denoised.
+* Il PSNR si misura in decibel (dB): Valori più alti indicano una migliore qualità dell'immagine denoised (più vicina all'originale). Valori bassi indicano maggiore perdita di qualità.
+
 
 ### Perché usare N2V in questo contesto?
 Noise2Void (N2V) è particolarmente adatto per il contesto del challenge per le seguenti ragioni:
@@ -32,7 +38,8 @@ Noise2Void (N2V) è particolarmente adatto per il contesto del challenge per le 
     I metodi di denoising tradizionali possono attenuare o distorcere dettagli importanti per l'analisi biologica. N2V è progettato per preservare le caratteristiche strutturali, rendendolo ideale per immagini di cellule, tessuti e altre strutture microscopiche.
 
 ## Codice Python
-Le implementazioni di Noise2Void (N2V) sono facilmente accessibili attraverso librerie come *CSBDeep*, che sfrutta framework popolari come *TensorFlow* e *Keras*. Per addestrare il modello, gli script richiedono di specificare parametri essenziali come il numero di epoche, la dimensione del batch e l'architettura della rete. L'approccio standard utilizza una rete convoluzionale che integra un meccanismo per escludere alcuni pixel durante l'addestramento. Questo processo permette alla rete di sviluppare una notevole capacità di riduzione del rumore, rendendola robusta anche in presenza di dati rumorosi.
+Le implementazioni di Noise2Void (N2V) sono facilmente accessibili attraverso librerie come *CSBDeep*, che sfrutta framework popolari come *TensorFlow* e *Keras*. 
+Per addestrare il modello, gli script richiedono di specificare parametri essenziali come il numero di epoche, la dimensione del batch e l'architettura della rete. L'approccio standard utilizza una rete convoluzionale che integra un meccanismo per escludere alcuni pixel durante l'addestramento. Questo processo permette alla rete di sviluppare una notevole capacità di riduzione del rumore, rendendola robusta anche in presenza di dati rumorosi.
 
 #### + aggiungere immagini di codice ??
 
