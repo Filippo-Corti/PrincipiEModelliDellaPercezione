@@ -202,7 +202,7 @@ I metodi di denoising cercano di eliminare il rumore pur mantenendo i dettagli e
 
 
 
-
+-----------------------------
 # COSA METTERE NELLE SLIDE:
 # Il Rumore
 ## **Cos'è il Rumore nelle Immagini**
@@ -220,19 +220,23 @@ Cos'è il Rumore:
 * Compressione dei dati: Algoritmi di compressione che riducono la dimensione del file ma causano artefatti.
 
 
-## 3. **Classificazione del Rumore**
+## **Classificazione del Rumore**
+* Rumore Gaussiano: Segue una distribuzione normale e si distribuisce uniformemente in tutta l'immagine, causato da fluttuazioni nei sensori.
+* Rumore di Poisson: Tipicamente presente in immagini con scarsa illuminazione, è causato dalle fluttuazioni casuali nel numero di fotoni rilevati dal sensore. 
+* Rumore Sale e Pepe: Caratterizzato da pixel bianchi e neri sparsi nell’immagine, è causato da errori di trasmissione o difetti nei sensori e circuiti.
+* Rumore Uniforme: Distribuito uniformemente in tutte le direzioni, può derivare da disturbi nei sensori o nella compressione dei dati.
 
 
-## 4. **Implicazioni per il Denoising**
+## **Implicazioni per il Denoising**
 Il denoising, cioè la riduzione del rumore, è cruciale per migliorare la qualità delle immagini, specialmente in ambiti scientifici e medici come la microscopia. 
 
 I metodi di denoising cercano di eliminare il rumore pur mantenendo i dettagli e le caratteristiche importanti dell'immagine.
 
+Uno degli obiettivi principali del denoising è bilanciare la riduzione del rumore con la preservazione dei dettagli. Tecniche troppo aggressive possono portare alla perdita di informazioni importanti, come nel caso di sfocature nelle immagini. In ambiti come la microscopia, dove i dettagli sono cruciali, l'uso di metodi avanzati di denoising è particolarmente importante.
 
------------------------
+In campo medico e scientifico, il denoising è fondamentale per migliorare la qualità delle immagini ottenute tramite tecniche come la risonanza magnetica (RM), la tomografia a emissione di positroni (PET) e la microscopia elettronica. La riduzione del rumore aiuta a ottenere diagnosi più precise, consentendo ai professionisti di osservare dettagli che potrebbero altrimenti essere oscurati dal rumore.
 
-
-
+------------------
 
 # Noise2Void (N2V):
 
