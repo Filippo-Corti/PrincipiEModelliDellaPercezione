@@ -221,10 +221,7 @@ Cos'è il Rumore:
 
 
 ## 3. **Classificazione del Rumore**
-- **Rumore Gaussiano**: È un tipo di rumore che segue una distribuzione normale (gaussiana). È causato da fluttuazioni casuali nei sensori e in generale si distribuisce in modo uniforme in tutta l'immagine. È uno dei tipi di rumore più comuni nelle immagini.
-- **Rumore di Poisson**: Tipicamente presente in immagini con scarsa illuminazione, è causato dalle fluttuazioni casuali nel numero di fotoni rilevati dal sensore. Questo tipo di rumore è spesso associato a basse intensità di segnale.
-- **Rumore Sale e Pepe**: È caratterizzato da pixel bianchi e neri casuali sparsi nell'immagine. È causato da errori di trasmissione o da difetti nel sensore o nei circuiti elettronici.
-- **Rumore Uniforme**: Ha una distribuzione uniforme in tutte le direzioni dell'immagine e può essere causato da disturbi a livello di sensori o compressione dei dati.
+
 
 ## 4. **Implicazioni per il Denoising**
 Il denoising, cioè la riduzione del rumore, è cruciale per migliorare la qualità delle immagini, specialmente in ambiti scientifici e medici come la microscopia. 
