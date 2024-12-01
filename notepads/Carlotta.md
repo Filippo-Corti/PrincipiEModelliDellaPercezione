@@ -205,15 +205,14 @@ I metodi di denoising cercano di eliminare il rumore pur mantenendo i dettagli e
 
 # COSA METTERE NELLE SLIDE:
 # Il Rumore
-## 1. **Cos'è il Rumore nelle Immagini**
-Il **rumore** nelle immagini è una distorsione casuale che altera i pixel, rendendo l'immagine meno chiara o visibile. 
+## **Cos'è il Rumore nelle Immagini**
+Cos'è il Rumore:
+* è una distorsione casuale che altera i pixel, rendendo l'immagine meno chiara o visibile;
+* è un artefatto che può compromettere l'analisi dei dati;
+* può distorcere la qualità dell'immagine, influenzando la sua nitidezza, contrasto e dettagli.
 
-Esso è un artefatto che non rappresenta informazioni reali e può compromettere l'analisi dei dati. 
 
-Il rumore può distorcere la qualità dell'immagine, influenzando la sua nitidezza, contrasto e dettagli.
-
-## 2. **Come si Forma il Rumore**
-Il rumore può formarsi in vari modi durante il processo di acquisizione delle immagini. Alcune cause comuni includono:
+## **Come si Forma il Rumore**
 
 - **Rumore da sensore**: Quando i sensori della fotocamera o del microscopio non catturano correttamente tutte le informazioni luminose, producendo distorsioni.
 - **Interferenze elettroniche**: Disturbi nei circuiti elettronici che possono alterare i segnali durante la registrazione.
