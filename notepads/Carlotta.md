@@ -250,15 +250,12 @@ N2V risulta adatto a contesti, come questo, dove raccogliere dati di riferimento
 
 
 ### Struttura della challenge
-I partecipanti applicano algoritmi su dataset biologici standardizzati.
-Le performance degli algoritmi sono valutate attraverso metriche riconosciute, come il **Peak Signal-to-Noise Ratio (PSNR)**, che misura quanto l'immagine denoised si avvicina all'originale in termini di fedeltà, e il **Structural Similarity Index (SSIM)**, che analizza la somiglianza strutturale tra le due immagini.
-I risultati dei partecipanti sono poi confrontati con approcci tradizionali e di nuova generazione, consentendo di identificare le soluzioni più efficaci. 
+Le performance degli algoritmi sono valutate attraverso:
+Structural Similarity Index (SSIM): analizza la somiglianza strutturale tra le immagini.
+Peak Signal-to-Noise Ratio (PSNR): valuta attraverso un grado di fedeltà.
 
 #### PSNR
-$$
-\text{PSNR} = 10 \cdot \log_{10} \left( \frac{\text{MAX}^2}{\text{MSE}} \right)
-$$
-![alt text](image.png)
+![alt text](img-carlotta/PSNR-bianco.png)
 
 * Dove MAX: Rappresenta il valore massimo dell'intensità dei pixel nelle immagini microscopiche.
 * MSE (Mean Squared Error): È l'errore quadratico medio tra l'immagine originale (ground truth) e quella denoised.
