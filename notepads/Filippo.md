@@ -820,6 +820,7 @@ Per provare a comprendere il funzionamento dell'Algoritmo Noise2Void cerchiamo d
     + Un meccanismo che concretamente consenta di eliminare il rumore.
     + Una Loss Function, che consenta di perfezionare i valori dei parametri della Rete Neurale durante l'addestramento. Il motivo per cui questa Funzione è così importante è che normalmente le Loss Function sono calcolate sulle Ground Truth: come fare nel caso in cui, come per N2V, la Ground Truth non esiste?
 
+
 Analizziamo ora una ad una queste 3 componenti.
 ----------
 L'Architettura:
@@ -879,11 +880,27 @@ Una volta in possesso dell'operatore di Convoluzione, le CNNs funzionano così:
 
 3. Activation Layer: dopo la Convoluzione, come nei Percettroni viene applicata una Funzione di Attivazione ad ogni elemento della matrice rappresentante immagine. L'obiettivo è lo stesso dei MLP, simulare un comportamento non lineare.
 
-4. Pooling Layer: il layer di pooling ha l'obiettivo di ridurre la dimensione del segnale, mantenendone le sue caratteristiche più importanti. Si applica dopo Layer Convoluzionale + Attivazione. Tipicamente viene applicato un Max-Pooling, che per ogni finestra della matrice (di solito 2x2) la riduce a 1px, corrispondente al massimo dei vicini
+4. Pooling Layer: il layer di pooling ha l'obiettivo di ridurre la dimensione del segnale, mantenendone le sue caratteristiche più importanti. Si applica dopo Layer Convoluzionale + Attivazione. Tipicamente viene applicato un Max-Pooling, che per ogni finestra della matrice (di solito 2x2) la riduce a 1px, corrispondente al massimo dei vicini.
+
+Dopo un certo numero di layer convoluzionali e di pooling, il segnale arriva ad una dimensione prefissata. La CNN termina con una Feed-Forward Network, fully connected. Affinché l'immagine possa essere passata a questa rete è chiaramente necessaria l'operazione di appiattimento.
+La Rete Fully Connected esegue l'effettiva attività di riconoscimento o classificazione, esattamente come spiegato precedentemente.
+
+Riprendendo le problematiche precedenti, rispetto ad un tradizionale MLP:
+    > Il segnale rimane per tutta la parte "convoluzionale" della rete in forma bidimensionale. Le Feature maps consentono di estrarre le proprietà dell'immagine mantenendone la spazialità.
+    > Il numero di pesi necessari è estremamente ridotto, poiché ogni neurone che effettua la convoluzione sull'immagine NxN non ha più bisogno di NxN pesi, ma se applica un filtro HxH avrà bisogno di H^2 pesi. In pratica posso applicare kernel più piccoli e ridurrò il numero di pesi della rete.
 
 
+----------
+fully convolutional networks
 
+le convolutional networks ottimizzano l'architettura per l'elaborazione di immagini ma presentano ancora un problema rispetto al nostro obiettivo di denoising: il loro output è lo stesso delle fully connected networks, ovvero un valore numerico adatto a task di classificazione e recognition. Per poter effettuare operazioni di riduzione del rumore vogliamo, a partire da un'immagine, avere in output un'altra immagine. 
 
+IDEA: rimuovere la parte Fully Connected della CNN per ottenere una rete interamente convoluzionale (Fully Convolutional).
+Poi trasformare le feature maps, bidimensionali, in un'immagine di output.
 
+UTILITA': svolgere task che prevedono un'immagine di output, elaborata pixel-per-pixel: prima fra tutte la Segmentazione, che deve fornire una predizione per ogni pixel dell'immagine: a quale oggetto appartiene?
+Questo tipo di attività aveva ottenuto scarsi risultati nelle reti CNN tradizionali, principalmente a causa dell'impossibilità di combinare, in una predizione:
+    > Il "Cosa", ovvero capire ad esempio cosa rappresenti l'immagine. Questo richiede "informazione globale".
+    > Il "Dove", ovvero capire in un'immagine di più soggetti quale soggetto sia quale. Richiede "informazione locale".
 
-
+FUNZIONAMENTO: 
