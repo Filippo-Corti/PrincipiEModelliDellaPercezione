@@ -93,3 +93,37 @@ Due approcci innovativi e particolarmente efficienti per affrontare questo probl
 - **Noise2Void** (N2V) è una tecnica di denoising in immagini, che si basa su un approccio simile al Noise2Noise ma con una caratteristica distintiva. A differenza di Noise2Noise, che utilizza due immagini rumorose per l'addestramento, Noise2Void può essere applicato anche a un solo dato rumoroso, senza la necessità di immagini aggiuntive. L'idea di Noise2Void è che si può addestrare una rete neurale a rimuovere il rumore da una singola immagine rumorosa senza bisogno di una versione pulita di riferimento.
 
     Durante l'addestramento, l'algoritmo maschera casualmente alcuni dei pixel dell'immagine rumorosa, e la rete neurale cerca di predire il valore di un pixel mascherato utilizzando i pixel vicini non mascherati.
+
+# SOMIGLIANZE N2V E SISTEMA VISIVO UMANO
+Noise2Void (N2V) trae ispirazione da principi biologici osservati nel nostro sistema visivo (HVS) in termini di approccio e strategia per l'elaborazione delle informazioni.
+
+## Riempimento percettivo e mascheramento dei pixel
+- HVS: il sistema visivo umano è straordinariamente adattivo e capace di compensare le lacune nei dati visivi. Un esempio lampante è il riempimento percettivo, che si verifica nella gestione dell’area cieca (blind spot): si tratta di una zona della retina in corrispondenza del punto in cui il nervo ottico si collega all'occhio. In questa zona mancano fotorecettori (coni e bastoncelli), perciò non si percepisce alcuna immagine. Nonostante ciò, le persone non sono consapevoli di questo "vuoto visivo" nella loro percezione.
+
+    Il cervello utilizza informazioni visive provenienti dai pixel (fotorecettori) circostanti all’area cieca per "riempire" la zona mancante. In pratica, il cervello si basa su schemi, colori, texture e continuità presenti nel contesto visivo. Per esempio:
+    - Se l’area cieca cade su una texture omogenea come il cielo blu, il cervello la completa riempiendola con il colore circostante.
+    - Se cade su una linea retta o un contorno, il cervello estende la linea per mantenere la coerenza visiva.
+
+- N2V: in N2V durante l'addestramento, il metodo maschera pixel casuali all'interno dell'immagine, rendendoli "invisibili" per il modello. Il valore di questi pixel viene escluso temporaneamente. Lo scopo è di addestrare il modello a predire il valore corretto di questi pixel mascherati usando solo i pixel vicini. Sfrutta la correlazione spaziale (ossia, la somiglianza tra pixel vicini) presente nelle immagini naturali. Ad esempio:
+    - Se un pixel mascherato si trova in un’area di cielo azzurro uniforme, il modello predice che anche il pixel nascosto avrà un valore simile ai pixel circostanti.
+    - Se il pixel si trova su un bordo o una transizione, N2V apprende a interpretare i contorni basandosi sulla configurazione dei pixel adiacenti.
+
+    Il mascheramento fornisce un meccanismo di apprendimento auto-supervisionato. Poiché il modello non ha accesso al valore originale del pixel mascherato, è costretto a trovare schemi nei dati circostanti per fare una predizione accurata.
+    In questo modo, il modello impara a distinguere il rumore (che è casuale) dai pattern sottostanti (che sono strutturati e ridondanti).
+
+## Soppressione neuronale e mascheramento dei pixel rumorosi
+- HVS: il cervello umano utilizza un meccanismo di soppressione per filtrare le informazioni visive irrilevanti o non coerenti che interferiscono con l’interpretazione corretta di un’immagine. La soppressione neurale è un meccanismo di filtraggio realizzato tramite:
+    - Inibizione laterale: le cellule gangliari della retina ricevono segnali dai fotorecettori e comunicano tra loro. Questa comunicazione è regolata dall'inibizione laterale, in cui le cellule inibiscono le loro vicine per aumentare il contrasto e ridurre l’effetto del rumore.
+    - Integrazione temporale: il cervello combina segnali ricevuti in momenti diversi, scartando informazioni casuali (rumore) e preservando quelle persistenti (segnale utile). Ad esempio quando osserviamo una scena poco illuminata, i segnali casuali generati dai fotorecettori sono filtrati, e il cervello costruisce un’immagine coerente basandosi su ciò che è stabile nel tempo.
+    - Selezione contestuale: le aree della corteccia visiva superiore decidono quali dettagli visivi sono rilevanti e sopprimono input irrilevanti o confusi, come ombre o riflessi.
+
+- N2V: in N2V, la stima dei pixel mascherati si basa sulla combinazione di informazioni spaziali circostanti. Quando un pixel viene mascherato, il modello si affida ai valori dei pixel vicini per stimare il valore del pixel mascherato. Questo approccio è particolarmente efficace in quanto sfrutta le correlazioni naturali che esistono tra i pixel di un'immagine.
+
+## Adattamento dinamico al contesto e apprendimento auto-supervisionato
+- HVS: l’occhio umano si adatta dinamicamente alle condizioni di illuminazione e alle caratteristiche del contesto visivo.
+
+    Il sistema visivo umano apprende in modo dinamico attraverso l'esperienza. Non ha bisogno di avere sempre accesso a una "verità di riferimento" (un'immagine "pulita" o senza errori) per interpretare correttamente il mondo. Man mano che il cervello accumula esperienze visive, diventa sempre più abile nel riconoscere oggetti, pattern e movimenti, adattandosi al contesto circostante.
+
+    Ad esempio se un bambino osserva una persona con gli occhiali in diverse condizioni di illuminazione, non ha bisogno di una "verità di riferimento" per riconoscere quella persona. Il cervello sviluppa la capacità di riconoscere la persona in base al contesto, anche in ambienti poco illuminati o con disturbi visivi.
+
+- N2V: similmente, N2V affronta la riduzione del rumore senza necessitare di immagini "pulite" per l'addestramento. Il modello deve apprendere a ridurre il rumore auto-supervisionandosi, cioè sfruttando i pattern locali nelle immagini per migliorare la qualità complessiva.
