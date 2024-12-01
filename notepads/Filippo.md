@@ -810,5 +810,80 @@ I want to:
 - Create a Notebook for the training and prediction of 1 single BSD68 image, for presentation
 
 
-## Create a Small DEMO for a single image and a model trained on it on a Jupiter Notebook
+# Discorso per Slide:
+
+----------
+Noise2Void:
+
+Per provare a comprendere il funzionamento dell'Algoritmo Noise2Void cerchiamo di analizzare le componenti che lo costituiscono. Fondamentalmente N2V si compone di:
+    + Una Rete Neurale, per cui dobbiamo scegliere un'Architettura.
+    + Un meccanismo che concretamente consenta di eliminare il rumore.
+    + Una Loss Function, che consenta di perfezionare i valori dei parametri della Rete Neurale durante l'addestramento. Il motivo per cui questa Funzione è così importante è che normalmente le Loss Function sono calcolate sulle Ground Truth: come fare nel caso in cui, come per N2V, la Ground Truth non esiste?
+
+Analizziamo ora una ad una queste 3 componenti.
+----------
+L'Architettura:
+
+L'Architettura utilizzata è una U-Net, che è una rete utilizzata tipicamente per attività di segmentazione. Piuttosto che partire dal risultato (l'U-Net) per cercare di capire come mai si utilizzi una U-Net per attività di Denoising, proviamo a partire dall'inizio concentrandoci su pochi, fondamentali aspetti.
+
+----------
+Il Percettrone (by Rosenblatt, late 1950s):
+
+Proprio perché vogliamo partire dal principio di un'Architettura di Rete Neurale, partiamo dall'Architettura più semplice in assoluto: il Percettrone.
+
+IDEA: simulare un Neurone Umano
+
+UTILITA': E' un Classificatore Binario Lineare, ovvero è in grado, data una serie di input descriventi un certo soggetto, di classificare secondo una logica "Si/No" tale soggetto rispetto ad una certa sua caratteristica, purché questa classificazione possa avvenire in maniera "lineare" (ovvero la divisione di un piano n-dimensionale tra soggetti sì e soggetti no deve essere possibile tramite il tracciamento di una funzione lineare).
+
+https://images.deepai.org/glossary-terms/3bb86574825445cba73a67222b744648/hyperplane.png
+
+FUNZIONAMENTO: Il Percettrone consiste di 4 parti: (a) Input layer, formato dal vettore di valori di input, (b) pesi, che vengono assegnati ad ognuno dei valori di input, (c) Operatore di Somma, che effettua la media pesata per i valori di input rispetto ai pesi e (d) Funzione di Attivazione, che tipicamente è definita impiricamente e serve ad effettuare un'ultima trasformazione all'output, ad esempio facendolo rientrare nel range [0,1]
+
+----------
+Il Multi-Layer Perceptron (o Artificial Neural Network o Feed-Foward Neural Network)
+
+E' chiaro che il Percettrone non è sufficiente da solo a svolgere compiti complessi. La prima idea è quella di combinare più Percettroni, in quella che chiamiamo Deep Feed-Foward Network.
+
+IDEA: combinare Percettroni per svolgere compiti più complessi
+
+UTILITA': Approssimazione di Funzioni Complesse, anche Non Lineari. 
+
+FUNZIONAMENTO: I dati nell'input layer vengono passati a una serie di Hidden Layer, layer nascosti, formati ognuno da un certo numero di neuroni (i nostri Percettroni). Ogni Neurone dell'i esimo layer riceve un input da ogni neurone dell'i-1 esimo layer, secondo un principio noto come "Fully Connected".
+Ogni Percettrone definisce i propri pesi, che migliora con l'addestramento, ed è effettua esattamente lo stesso compito che faceva quando era solo. 
+Un MLP può essere rappresentato come un grafo orientato, aciclico.
+E' importante osservare come l'input di ogni neurone è di fatto un vettore di dimensione (N, 1).
+
+----------
+Le Convolutional Neural Network
+
+Chiarite le basi, ci vogliamo avvicinare concretamente al problema della rimozione del rumore dalle immagini. 
+Il primo passo avanti è banale: abbiamo bisogno di una Rete Neurale adatta a immagini.
+Nelle Feed-Forward Network non era impossibile utilizzare un'immagine come input, ma c'erano due grosse limitazioni:
+    > Abbiamo detto che l'input è un vettore di dimensione (N, 1). In pratica, se abbiamo un'immagine di dimensioni NxN dobbiamo necessariamente "appiattirla" in un vettore (N^2, 1).
+    Questo complica particolarmente il lavoro alla Rete Neurale perché si perde la spazialità dell'immagine: in un vettore (N^2, 1) rendo particolarmente difficili da individuare aspetti come la forma di un oggetto, la distanza tra due punti, la vicinanza verticale di due punti, ...
+    > Le immagini sono tipicamente di dimensioni piuttosto grandi. Un vettore (N, 1) come input significa che ogni singolo neurone del primo hidden layer deve possedere un rispettivo vettore (N, 1) per i pesi. In un layer con M neuroni, ci serve una matrice di pesi (NxM).
+    In pratica: abbiamo bisogno di una marea di pesi.
+
+IDEA: Ottimizzare le FFNs per input N-dimensionali, in particolare per immagini 2D.
+
+UTILITA': Image Recognition e Classification. 
+
+FUNZIONAMENTO: per creare una Rete Neurale "a misura di immagine", abbiamo bisogno di introdurre una nuova operazione: la Convoluzione. La Convoluzione si applica tra due matrici, tipicamente una grande (l'input) e una piccola (il "filtro" o kernel). Il filtro viene fatto scorrere come una finestra sull'input e, per ogni sua posizione, viene effettuata una moltiplicazione elemento-per-elemento tra la finestra dell'input che il filtro ricopre e il filtro stesso. 
+    ... Valutare quanto abbia senso approfondire la convoluzione (padding, stride, dimensioni di input e output...) ...
+
+Una volta in possesso dell'operatore di Convoluzione, le CNNs funzionano così:
+
+1. Input Layer: è l'immagine, in formato NxN
+
+2. Convolutional Layer: il layer è descritto da una serie di Kernel, che definiamo "Feature Maps" per la loro capacità di individuare nell'immagine alcune sue specifiche feature. L'idea è di simulare i Neuroni Complessi del nostro Sistema Nervoso. L'immagine fatta passare nel Layer di Convoluzione diventa fondamentalmente un insieme di Feature Maps, segnali bidimensionali dalle dimensioni ridotte (Di quanto? Dipende dalle caratteristiche della convoluzione)
+
+3. Activation Layer: dopo la Convoluzione, come nei Percettroni viene applicata una Funzione di Attivazione ad ogni elemento della matrice rappresentante immagine. L'obiettivo è lo stesso dei MLP, simulare un comportamento non lineare.
+
+4. Pooling Layer: il layer di pooling ha l'obiettivo di ridurre la dimensione del segnale, mantenendone le sue caratteristiche più importanti. Si applica dopo Layer Convoluzionale + Attivazione. Tipicamente viene applicato un Max-Pooling, che per ogni finestra della matrice (di solito 2x2) la riduce a 1px, corrispondente al massimo dei vicini
+
+
+
+
+
+
 
