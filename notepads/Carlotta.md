@@ -1,8 +1,8 @@
 N2V in pratica:
-    - Grand Challenge: cosa è, perche si usa N2V in questo contesto
-    - Codice Python
-    - Risultati con diversi valori per epochs e batch_size
-    - Difetti del N2V e possibili risoluzioni
+* Grand Challenge: cosa è, perche si usa N2V in questo contesto
+* Codice Python
+* Risultati con diversi valori per epochs e batch_size
+* Difetti del N2V e possibili risoluzioni
 
 # Noise2Void (N2V):
 
@@ -52,6 +52,7 @@ Prima di procedere all'addestramento della Rete, occorre creare un oggetto di Co
 I parametri più rilevanti per l'addestramento sono:
 * **batch_size**
 * **num_epochs**
+
 Aggiustare il valore di questi parametri coerentemente alle caratteristiche dell'hardware su cui si intende svolgere l'addestramento.
 
 ```python
@@ -113,8 +114,8 @@ print(f"TIFF file saved to {output_path}")
 ```
 
 #### IMMAGINI
-![alt text](DENOISING1.png) //modificare con chat
-![alt text](DENOISING2.png) //modificare con chat
+![alt text](img-carlotta/DENOISING1.png)
+![alt text](img-carlotta/DENOISING2.png)
 
 
 ## Risultati con valori variabili per epochs e batch_size
@@ -122,27 +123,46 @@ Un **numero maggiore di epoch** e consente al modello di convergere meglio, migl
 Per quanto riguarda la **dimensione del batch**, utilizzare batch più grandi può velocizzare il processo di addestramento, ma richiede una maggiore quantità di memoria. Valori comuni per il batch size sono 16 o 32. 
 L’ottimizzazione di questi parametri, applicata a dataset di microscopia, ha dimostrato di migliorare significativamente metriche come il rapporto segnale-rumore (**PSNR**) e l’indice di somiglianza strutturale (**SSIM**), che misurano la qualità delle immagini denoised rispetto a quelle originali.
 
-++ **AGGIUNGERE IMMAGINI DIFFERENZA TRA EPOCHE !!** 
-![alt text](DENOISING1.png) //modificare con chat
+++ **IMMAGINI DIFFERENZA TRA EPOCH** 
+![alt text](img-carlotta/DENOISING1.png)
 
 
-## Difetti del N2V e possibili risoluzioni (PARALRE DI N2V2 (gli altri lascia stare))
-### Limitazioni
+
+## Difetti del N2V e possibili risoluzioni 
 N2V può introdurre **artefatti** in immagini con dettagli complessi, poiché il suo approccio ignora i pixel vicini durante l'addestramento. Inoltre, non gestisce bene il rumore strutturato, che presenta correlazioni tra i pixel.
 
-### Possibili risoluzioni
-•	**Tecniche alternative**: Metodi come Noise2Self e Self2Self migliorano la robustezza utilizzando ridondanze statistiche o approcci iterativi.
-•	**Dati sintetici**: Simulare rumore realistico durante l'addestramento aiuta il modello a generalizzare meglio.
-•	**Architetture avanzate**: L’integrazione di Transformers o meccanismi di attenzione nelle reti convoluzionali riduce gli artefatti mantenendo elevata qualità nel denoising.
+Una Possibile risoluzione è l'uso di **Dati sintetici**: Simulare rumore realistico durante l'addestramento aiuta il modello a generalizzare meglio.
 
-Nonostante alcune limitazioni, N2V è efficace per il denoising non supervisionato, e queste strategie ne estendono l’applicabilità in ambiti complessi come la microscopia biologica.
+### Problema blurry images --> N2V2
+N2V soffre inoltre di un problema noto come **blurry images**, ossia la generazione di immagini con un aspetto sfocato. Questo problema viene risolto nella versione successiva, Noise2Void2 (N2V2).
 
-#### N2V2??? --> 
---> PROBLEMA N2V BLURRY IMAGES 
---> CAREamics noise to void overview https://careamics.github.io/0.1/algorithms/Noise2Void/
-++ file:///C:/Users/carlo/Downloads/978-3-031-25069-9.pdf pag 525 !!!!
+#### Origine del problema
+N2V sfrutta il contesto locale di un pixel rumoroso per predirne il valore corretto. Tuttavia, questa strategia implica una perdita di dettagli fini e texture, specialmente quando l'immagine ha strutture complesse o rumore ad alta frequenza.
+
+L'algoritmo:
+* Rimuove il pixel bersaglio durante l'addestramento.
+* Predice il valore del pixel in base ai pixel circostanti (mascherando il pixel di destinazione).
+
+Questo meccanismo porta a predizioni troppo lisce perché il modello tende a favorire una media dei valori circostanti, risultando in:
+* Dettagli attenuati.
+* Sfocatura su bordi o texture fini.
+
+#### Soluzione proposta da Noise2Void2 (N2V2)
+Noise2Void2 (N2V2) risolve il problema delle *blurry images* migliorando la qualità delle predizioni attraverso:
+
+1. **Predizione probabilistica**: Invece di un valore singolo, stima una distribuzione di probabilità, preservando dettagli e bordi.
+2. **Nuova funzione di perdita**: Utilizza una perdita basata su distribuzioni, riducendo l'effetto di sovra-lisciamento.
+3. **Mascheramento ottimizzato**: Migliora il contesto locale per predizioni più accurate.
+4. **Incorporazione di priori**: Usa conoscenze predefinite per gestire strutture complesse.
+
+Questo rende N2V2 più efficace nel mantenere texture e dettagli rispetto a N2V.
+
+
+CAREamics noise to void overview https://careamics.github.io/0.1/algorithms/Noise2Void/
+++ file:///C:/Users/carlo/Downloads/978-3-031-25069-9.pdf pag 525 
 
 https://ai4life-mdc24.grand-challenge.org/
+
 https://ai4life-mdc24.grand-challenge.org/useful-links/
 
 
@@ -152,7 +172,11 @@ Cos'è il Rumore:
 * Come si classifica
 
 ## 1. **Cos'è il Rumore nelle Immagini**
-Il **rumore** nelle immagini è una distorsione casuale che altera i pixel, rendendo l'immagine meno chiara o visibile. Esso è un artefatto che non rappresenta informazioni reali e può compromettere l'analisi dei dati. Il rumore può distorcere la qualità dell'immagine, influenzando la sua nitidezza, contrasto e dettagli.
+Il **rumore** nelle immagini è una distorsione casuale che altera i pixel, rendendo l'immagine meno chiara o visibile. 
+
+Esso è un artefatto che non rappresenta informazioni reali e può compromettere l'analisi dei dati. 
+
+Il rumore può distorcere la qualità dell'immagine, influenzando la sua nitidezza, contrasto e dettagli.
 
 ## 2. **Come si Forma il Rumore**
 Il rumore può formarsi in vari modi durante il processo di acquisizione delle immagini. Alcune cause comuni includono:
@@ -171,7 +195,9 @@ Esistono diversi tipi di rumore, ognuno con caratteristiche specifiche. I princi
 - **Rumore Sale e Pepe**: È caratterizzato da pixel bianchi e neri casuali sparsi nell'immagine. È causato da errori di trasmissione o da difetti nel sensore o nei circuiti elettronici.
 - **Rumore Uniforme**: Ha una distribuzione uniforme in tutte le direzioni dell'immagine e può essere causato da disturbi a livello di sensori o compressione dei dati.
 
-## 4. **Implicazioni per la Denoising**
-Il denoising, cioè la riduzione del rumore, è cruciale per migliorare la qualità delle immagini, specialmente in ambiti scientifici e medici come la microscopia. I metodi di denoising cercano di eliminare il rumore pur mantenendo i dettagli e le caratteristiche importanti dell'immagine.
+## 4. **Implicazioni per il Denoising**
+Il denoising, cioè la riduzione del rumore, è cruciale per migliorare la qualità delle immagini, specialmente in ambiti scientifici e medici come la microscopia. 
+
+I metodi di denoising cercano di eliminare il rumore pur mantenendo i dettagli e le caratteristiche importanti dell'immagine.
 
 
