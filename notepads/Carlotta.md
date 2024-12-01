@@ -213,16 +213,14 @@ Cos'è il Rumore:
 
 
 ## **Come si Forma il Rumore**
+* Rumore da sensore: I sensori non catturano tutte le informazioni luminose.
+* Interferenze elettroniche: Disturbi nei circuiti elettronici che alterano i segnali.
+* Limitazioni hardware: Qualità inferiore dei dispositivi di acquisizione (bassa risoluzione).
+* Condizioni ambientali: Fluttuazioni di temperatura, illuminazione instabile o vibrazioni.
+* Compressione dei dati: Algoritmi di compressione che riducono la dimensione del file ma causano artefatti.
 
-- **Rumore da sensore**: Quando i sensori della fotocamera o del microscopio non catturano correttamente tutte le informazioni luminose, producendo distorsioni.
-- **Interferenze elettroniche**: Disturbi nei circuiti elettronici che possono alterare i segnali durante la registrazione.
-- **Limitazioni hardware**: La qualità dei dispositivi di acquisizione può essere una causa di rumore, soprattutto quando la risoluzione o la sensibilità non sono sufficienti.
-- **Condizioni ambientali**: Fluttuazioni di temperatura, illuminazione instabile o vibrazioni possono introdurre rumore nei dati.
-- **Compressione dei dati**: Algoritmi di compressione per ridurre la dimensione del file possono introdurre artefatti che appaiono come rumore.
 
-## 3. **Come si Classifica il Rumore**
-Esistono diversi tipi di rumore, ognuno con caratteristiche specifiche. I principali sono:
-
+## 3. **Classificazione del Rumore**
 - **Rumore Gaussiano**: È un tipo di rumore che segue una distribuzione normale (gaussiana). È causato da fluttuazioni casuali nei sensori e in generale si distribuisce in modo uniforme in tutta l'immagine. È uno dei tipi di rumore più comuni nelle immagini.
 - **Rumore di Poisson**: Tipicamente presente in immagini con scarsa illuminazione, è causato dalle fluttuazioni casuali nel numero di fotoni rilevati dal sensore. Questo tipo di rumore è spesso associato a basse intensità di segnale.
 - **Rumore Sale e Pepe**: È caratterizzato da pixel bianchi e neri casuali sparsi nell'immagine. È causato da errori di trasmissione o da difetti nel sensore o nei circuiti elettronici.
