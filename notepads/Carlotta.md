@@ -200,6 +200,10 @@ Il denoising, cioè la riduzione del rumore, è cruciale per migliorare la quali
 
 I metodi di denoising cercano di eliminare il rumore pur mantenendo i dettagli e le caratteristiche importanti dell'immagine.
 
+Uno degli obiettivi principali del denoising è bilanciare la riduzione del rumore con la preservazione dei dettagli. Tecniche troppo aggressive possono portare alla perdita di informazioni importanti, come nel caso di sfocature nelle immagini. In ambiti come la microscopia, dove i dettagli sono cruciali, l'uso di metodi avanzati di denoising è particolarmente importante.
+
+In campo medico e scientifico, il denoising è fondamentale per migliorare la qualità delle immagini ottenute tramite tecniche come la risonanza magnetica (RM), la tomografia a emissione di positroni (PET) e la microscopia elettronica. La riduzione del rumore aiuta a ottenere diagnosi più precise, consentendo ai professionisti di osservare dettagli che potrebbero altrimenti essere oscurati dal rumore.
+
 
 
 -----------------------------
@@ -229,17 +233,14 @@ Cos'è il Rumore:
 
 ## **Implicazioni per il Denoising**
 Il denoising, cioè la riduzione del rumore, è cruciale per migliorare la qualità delle immagini, specialmente in ambiti scientifici e medici come la microscopia. 
-
 I metodi di denoising cercano di eliminare il rumore pur mantenendo i dettagli e le caratteristiche importanti dell'immagine.
+Uno degli obiettivi principali del denoising è bilanciare la riduzione del rumore con la preservazione dei dettagli. 
 
-Uno degli obiettivi principali del denoising è bilanciare la riduzione del rumore con la preservazione dei dettagli. Tecniche troppo aggressive possono portare alla perdita di informazioni importanti, come nel caso di sfocature nelle immagini. In ambiti come la microscopia, dove i dettagli sono cruciali, l'uso di metodi avanzati di denoising è particolarmente importante.
-
-In campo medico e scientifico, il denoising è fondamentale per migliorare la qualità delle immagini ottenute tramite tecniche come la risonanza magnetica (RM), la tomografia a emissione di positroni (PET) e la microscopia elettronica. La riduzione del rumore aiuta a ottenere diagnosi più precise, consentendo ai professionisti di osservare dettagli che potrebbero altrimenti essere oscurati dal rumore.
+In campo medico e scientifico, la riduzione del rumore delle immagini diagnostiche è fondamentale, poiché consente ai professionisti di osservare dettagli che potrebbero altrimenti essere oscurati dal rumore.
 
 ------------------
 
 # Noise2Void (N2V):
-
 
 ## Grand Challenge
 N2V è stato applicato in vari contesti, tra cui il **AI4Life Microscopy Denoising Challenge**, una competizione internazionale mirata al miglioramento delle immagini di microscopia, spesso affette da rumore (strutturato o non strutturato). 
