@@ -243,13 +243,13 @@ In campo medico e scientifico, la riduzione del rumore delle immagini diagnostic
 # Noise2Void (N2V):
 
 ## Grand Challenge
-N2V è stato applicato in vari contesti, tra cui il **AI4Life Microscopy Denoising Challenge**, una competizione internazionale mirata al miglioramento delle immagini di microscopia, spesso affette da rumore (strutturato o non strutturato). 
+AI4Life Microscopy Denoising Challenge è una competizione internazionale mirata al miglioramento delle immagini di microscopia affette da rumore, senza comprometterne i dettagli o l'integrità visiva. 
+I partecipanti sviluppano algoritmi avanzati su dataset standardizzati, ogni dataset include un riferimento (ground truth) per consentire una valutazione oggettiva dei risultati.
 
-La challenge si concentra sul miglioramento della qualità delle immagini microscopiche biologiche riducendo il rumore senza comprometterne i dettagli o l'integrità visiva. I partecipanti sono invitati a sviluppare e applicare algoritmi avanzati su dataset standardizzati, contenenti immagini provenienti da diverse sorgenti biologiche. 
-Ogni dataset include un riferimento (ground truth) per consentire una valutazione oggettiva dei risultati.
-Il metodo si distingue per la capacità di rimuovere il rumore utilizzando immagini rumorose senza necessità di dati puliti per l'addestramento, rendendole adatte a contesti, come questo, dove raccogliere dati di riferimento è difficile o costoso.
+N2V risulta adatto a contesti, come questo, dove raccogliere dati di riferimento è difficile poiché rimuove il rumore senza necessità di dati puliti per l'addestramento.
 
-### Struttura del challenge
+
+### Struttura della challenge
 I partecipanti applicano algoritmi su dataset biologici standardizzati.
 Le performance degli algoritmi sono valutate attraverso metriche riconosciute, come il **Peak Signal-to-Noise Ratio (PSNR)**, che misura quanto l'immagine denoised si avvicina all'originale in termini di fedeltà, e il **Structural Similarity Index (SSIM)**, che analizza la somiglianza strutturale tra le due immagini.
 I risultati dei partecipanti sono poi confrontati con approcci tradizionali e di nuova generazione, consentendo di identificare le soluzioni più efficaci. 
@@ -258,6 +258,7 @@ I risultati dei partecipanti sono poi confrontati con approcci tradizionali e di
 $$
 \text{PSNR} = 10 \cdot \log_{10} \left( \frac{\text{MAX}^2}{\text{MSE}} \right)
 $$
+![alt text](image.png)
 
 * Dove MAX: Rappresenta il valore massimo dell'intensità dei pixel nelle immagini microscopiche.
 * MSE (Mean Squared Error): È l'errore quadratico medio tra l'immagine originale (ground truth) e quella denoised.
