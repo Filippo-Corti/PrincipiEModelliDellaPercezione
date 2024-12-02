@@ -22,11 +22,11 @@ The network implements the Noise2Void (N2V) algorithm, as available through the 
 - Make sure Python and Anaconda ("conda") are installed and working.
 - Setup the Conda Environment:
 
-    ``` conda env create -f conda.yml ```
+    ``` conda env create -f env/conda.yml ```
 
     ``` conda activate n2v ```
 
-    ``` pip install -r requirements.txt ```
+    ``` pip install -r env/requirements.txt ```
 
 ### 2. Run the scripts
 
