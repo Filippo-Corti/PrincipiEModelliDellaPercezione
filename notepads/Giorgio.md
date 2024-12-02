@@ -94,6 +94,15 @@ Due approcci innovativi e particolarmente efficienti per affrontare questo probl
 
     Durante l'addestramento, l'algoritmo maschera casualmente alcuni dei pixel dell'immagine rumorosa, e la rete neurale cerca di predire il valore di un pixel mascherato utilizzando i pixel vicini non mascherati.
 
+# RUMORE NEL SISTEMA VISIVO UMANO
+Nel sistema visivo umano, il termine "rumore" si riferisce a fonti di disturbo che influenzano la capacità di percepire e interpretare correttamente gli stimoli visivi. Il rumore può essere suddiviso in due categorie principali: rumore esterno e rumore interno.
+- **Rumore Esterno**: questo tipo di rumore proviene dall'ambiente circostante e include fattori come scarsa illuminazione, bagliori, riflessi o la presenza di altri oggetti nel campo visivo, che possono compromettere la chiarezza delle informazioni visive.
+- **Rumore Interno**: questo rumore ha origine da fattori neurali e biologici all'interno del sistema visivo. Esso è causato principalmente dalle fluttuazioni casuali nell'attività neuronale, che possono verificarsi anche in assenza di stimoli visivi esterni. Le principali cause di rumore interno includono:
+    - Attività Spontanea dei Neuroni: anche in assenza di stimoli visivi, i neuroni visivi (localizzati nella retina, nel nervo ottico e nella corteccia visiva) continuano a generare impulsi elettrici. Questa attività spontanea introduce variabilità nei segnali elaborati, interferendo con la chiarezza delle informazioni visive.
+    - Variazioni nella Trasmissione Sinaptica: la comunicazione tra neuroni avviene tramite sinapsi, e in questo processo possono esserci fluttuazioni nei livelli di neurotrasmettitori rilasciati e nella sensibilità dei recettori post-sinaptici. Queste fluttuazioni introducono incertezza nella trasmissione dei segnali visivi, particolarmente quando gli stimoli esterni sono deboli.
+    - Interazioni Casualizzate tra Reti Neurali: interazioni non correlate o casuali tra diverse aree neurali del sistema visivo possono generare ulteriori fluttuazioni, aumentando il rumore e complicando l’elaborazione delle informazioni visive.
+ 
+
 # SOMIGLIANZE N2V E SISTEMA VISIVO UMANO
 Noise2Void (N2V) trae ispirazione da principi biologici osservati nel nostro sistema visivo (HVS) in termini di approccio e strategia per l'elaborazione delle informazioni.
 
