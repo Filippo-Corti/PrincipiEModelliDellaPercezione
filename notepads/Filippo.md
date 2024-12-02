@@ -243,6 +243,8 @@ https://arxiv.org/pdf/1605.06211v1
 https://www.andreaprovino.it/fcn
 https://towardsdatascience.com/review-fcn-semantic-segmentation-eb8c9b50d2d1
 https://medium.com/@mohit_gaikwad/overview-fully-convolutional-network-for-semantic-segmentation-b4ef92eeb8c4
+https://datascience.stackexchange.com/questions/6107/what-are-deconvolutional-layers
+
 ]
 
 ### 5. U-Net
@@ -339,7 +341,7 @@ Basically: I want to find X thing => I figure that this tile of the image probab
 Connecting parts allow for the encoder features to be concatenated on to the decoder features. They are:
 - The bottleneck -> where the encoder switches to decoder => we have the biggest amount of features 
 
-- The connecting paths ("Skip Connections") -> they simply cope the simmetrical feature on the encoder part and concatenate on to the opposing stage on the decoder.
+- The connecting paths ("Skip Connections") -> they simply copy the simmetrical feature on the encoder part and concatenate on to the opposing stage on the decoder.
     Decoder features include semantic information (there's a bike around there)
     Encoder features include spatial information (these are pixels of an object)
 
@@ -891,16 +893,110 @@ Riprendendo le problematiche precedenti, rispetto ad un tradizionale MLP:
 
 
 ----------
-fully convolutional networks
+Fully Convolutional Networks
 
-le convolutional networks ottimizzano l'architettura per l'elaborazione di immagini ma presentano ancora un problema rispetto al nostro obiettivo di denoising: il loro output è lo stesso delle fully connected networks, ovvero un valore numerico adatto a task di classificazione e recognition. Per poter effettuare operazioni di riduzione del rumore vogliamo, a partire da un'immagine, avere in output un'altra immagine. 
+Le convolutional networks ottimizzano l'architettura per l'elaborazione di immagini ma restituiscono come output un valore numerico interpretabile per task di classificazione e recognition. Per svolgere attività più complesse di elaborazione delle immagini, come la segmentazione o, nel nostro caso, il denoising, occorre una rete che restituisca in output un'immagine, in formato bidimensionale.
 
-IDEA: rimuovere la parte Fully Connected della CNN per ottenere una rete interamente convoluzionale (Fully Convolutional).
-Poi trasformare le feature maps, bidimensionali, in un'immagine di output.
+IDEA: Rimuovere la parte Fully Connected della CNN per ottenere una rete interamente convoluzionale (Fully Convolutional).
+Trasformare poi le feature maps, bidimensionali, in un'immagine di output tramite un processo di upsampling.
 
-UTILITA': svolgere task che prevedono un'immagine di output, elaborata pixel-per-pixel: prima fra tutte la Segmentazione, che deve fornire una predizione per ogni pixel dell'immagine: a quale oggetto appartiene?
-Questo tipo di attività aveva ottenuto scarsi risultati nelle reti CNN tradizionali, principalmente a causa dell'impossibilità di combinare, in una predizione:
-    > Il "Cosa", ovvero capire ad esempio cosa rappresenti l'immagine. Questo richiede "informazione globale".
-    > Il "Dove", ovvero capire in un'immagine di più soggetti quale soggetto sia quale. Richiede "informazione locale".
+UTILITA': svolgere task che prevedono un'immagine di output elaborata pixel-per-pixel. L'esempio tradizionale di questa attività è la segmentazione.
+Questo tipo di attività aveva ottenuto scarsi risultati nelle reti CNN tradizionali, principalmente a causa dell'impossibilità di combinare, in una predizione, informazioni spaziali e semantiche:
+    > Il "Cosa", ovvero capire ad esempio cosa rappresenti l'immagine. Questo richiede "informazione globale". SEMANTICA
+    > Il "Dove", ovvero capire in un'immagine di più soggetti quale soggetto sia quale. Richiede "informazione locale". SPAZIALITA'
 
 FUNZIONAMENTO: 
+Le Fully Convolutional Networks eseguono come una normale Rete CNN per quanto riguarda la fase di downsampling. A questo punto il segnale non viene appiattito e passato ad una FNN, bensì viene ritrasformato in un'immagine che consista nell'output della rete.
+Il processo di trasformazione del segnale post-downsampling in un'immagine dalle dimensioni uguali a quelle dell'input è detto upsampling: fondamentalmente effettua l'inverso del pooling, nel senso che deve ingrandire la risoluzione del segnale.
+
+L'upsampling può avvenire in vari modi, ma il più usato per l'elaborazione di immagini è la deconvoluzione (o meglio, convoluzione trasposta). Fondamentalmente si tratta di una convoluzione, ma svolta su una matrice riempita in qualche modo con del padding (all'interno o solo ai bordi)
+
+Versioni più avanzate prevedono che l'upsampling non avvenga in un solo passaggio, bensì in più passaggi sfruttando anche le matrici risultanti dai vari passaggi di pooling durante il downsampling. Questa idea è perseguita e perfezionata con le U-Net.
+
+----------
+U-Net
+
+Le U-Net revisitano l'architettura delle Fully Convolutional Network per 2 motivi:
+    - L'operazione di upsampling, anche con alcuni passaggi intermedi, comporta una consistente perdita di informazioni spaziali nel risultato rispetto all'immagine originale. Si vuole ottenere un risultato più accurato.
+    - Le FCN richiedono una grande quantità di dati, proprio a causa dell'inefficienza del processo di upsampling.
+
+IDEA: Specchiare la parte di downsampling, che viene chiamata ENCODER, in una equivalente di upsampling, chiamata DECODER. Applicare inoltre alcune trasformazioni, che consentano di rafforzare il modello anche con un numero di dati limitato.
+
+UTILITA': Sono nate in campo medico, dove la quantità di dati è limitata e le trasformazioni possono facilmente risultare realistiche (pensare a simmetrie/rotazioni di immagini di cellule). Ad oggi sono adatte a diverse attività, anche in altri ambiti. L'attività più comune rimane la segmentazione cellulare.
+
+FUNZIONAMENTO:
+La parte di upsampling delle FCN viene sostituita da un Decoder, formato fondamentalmente dagli stessi layer dell'Encoder, posizionati simmetricamente. Da questa struttura emerge la forma a "U", da cui le U-net prendono il nome. Nell'architettura originale:
+- La profondità è di 5 livelli.
+- Ogni livello di profondità dell'encoder effettua 2 convoluzioni con filtri 3x3, seguiti da una funzione di attivazione ReLu. Poi un max pooling 2x2.
+- Ogni livello di profondità del decoder effettua 2 convoluzioni con filtri 3x3, seguiti da una up-convoluzione (upsampling o deconvoluzione) 2x2.
+
+Spostandosi da un livello all'altro le feature maps raddoppiano nell'encoder e si dimezzano nel decoder.
+
+Il punto centrale della U è detto bottleneck. E' il punto in cui il maggior numero di feature è considerato. Concettualmente possiamo infatti immaginare il processo come:
+- ENCODER: estrazione delle feature, per individuare informazioni semantiche: quali oggetti appaiono nell'immagine?
+- DECODER: analisi spaziale delle feature, per individuare pixel-wise dove tali oggetti si trovino nell'immagine
+
+Per rendere il processo di upsampling del decoder più robusto, sono di fondamentale importanza le "Skip Connections": esse consentono all'i-esimo layer del decoder di utilizzare, nel processo di upsampling, il segnale come era stato elaborato dall'i-esimo layer dell'encoder. Questo è il processo che rende la rete molto più efficiente ed efficace di una norma FCN.
+
+Le trasformazioni che vengono tipicamente applicate sono simmetrie e rotazioni.
+
+
+----------
+N2V Architecture
+
+N2V utilizza una U-Net, tipicamente con una profondità ridotta rispetto al modello introdotto in precedenza (per evitare overfitting, infatti l'attività di denoising non richiede una precisione pixel-wise tanto alta quanto quella di semantic segmentation).
+
+I dettagli architetturali della nostra implementazione di Architettura N2V verranno descritti meglio più avanti...
+
+
+----------
+L'Algoritmo N2V
+
+Una volta chiarita l'architettura sottostante a N2V, possiamo concentrarci su come questo algoritmo riesca efficacemente a rimuovere il rumore da un'immagine. Dal punto di vista implementativo, N2V non fa altro che aggiungere una trasformazione all'insieme di trasformazioni che l'U-Net esegue tradizionalmente: questa trasformazione prende il nome di N2V Manipulate.
+
+Il funzionamento dell'algoritmo assume che:
+- L'immagine rumorosa x sia esprimibile come x = s + n, dove s è il segnale ed n è il rumore che lo degrada. La probabilità che x sia formato da s ed n è espressa come p(s, n) = p(s)*p(n|s)
+- Ogni pixel del segnale s originale è statisticamente dipendente dagli altri: P(s_i|s_j) != p(s_j)
+- Ogni pixel del rumore n applicato è statisticamente indipendente dagli altri: P(n_i|n_j) == p(n_i)
+    Questa indipendenza sottolinea come l'algoritmo sia adatto a rimuovere solo rumore non strutturato.
+
+Assumendo per vere queste condizioni, abbiamo la certezza teorica di poter stimare, a partire dai pixel vicini, il vero valore del segnale s per un certo pixel (e non il relativo rumore n).
+
+----------
+Blind Spot Network
+
+Partendo dall'assunzione che il vero valore di un certo pixel possa essere stimato osservando i pixel che lo circondano, i creatori di N2V (Krull e due suoi collaboratori) hanno proposto di creare una u-Net che applicasse delle particolari convoluzioni rappresentanti un campo recettivo avente un punto cieco. 
+Come accade nel nostro occchio, la loro idea era quella di lasciare che la rete riempisse il buco basandosi su ciò che compariva intorno ad esso: in questo modo veniva estratto il segnale s e andava persa la componente n di rumore!
+
+In realtà, dal punto di vista implementativo questa idea causa alcuni problemi ed è piuttosto inefficiente: per predire un singolo pixel abbiamo bisogno di un campo recettivo molto grande.
+
+----------
+N2V Manipulate
+
+La trasformazione N2V Manipulate effettua un processo di "masking" che cerca di ottimizzare l'idea del campo recettivo con Blind Spot. Essa prevede che.
+    - L'immagine di input venga suddivisa in maniera randomica in "patch" aventi dimensione 64x64
+    - All'interno di ogni patch viene scelto un certo numero di pixel N, in maniera casuale ma verificando che vengano rispettate certe condizioni (Stratified Sampling, serve ad assicurarsi una certa varietà nel campione scelto - è un concetto statistico).
+    Il valore tipico implementativo è un numero di pixe pari al 0.2% della patch (8 pixel in una patch 64x64).
+
+    A questo punto la rete ha deciso che tenterà di predire i valori per quegli N pixel, basandosi su tutti gli altri all'interno della patch:
+    - Gli N pixel vengono sostituiti con il valore di un altro pixel nelle loro vicinanze, scelto casualmente. 
+    - L'immagine così formata diventa l'input per la U-Net, che la decomporra in feature maps per poi ricomporla, auspicabilmente con meno rumore.
+
+
+----------
+N2V Loss Function?
+
+Una volta terminato il primo batch, la Rete U-Net deve aggiornare i propri parametri, come accade tipicamente durante l'addestramento. Emerge il problema che in N2V non esiste una ground truth per i dati di training da utilizzare per confrontare il risultato ottenuto e aggiornare conseguentemente i parametri: come fare?
+
+Continuando con l'elaborazione di N2V Manipulate, la funzione di Loss è calcolata utilizzando come ground truth gli unici valori delle immagini che non sono stati passati alla rete: i valori originali dei pixel scelti per essere mascherati!
+
+Tipicamente la formula utilizzata è una MSE tradizionale.
+
+Fondamentalmente la cosa funziona perché:
+- Se scelgo di mascherare un pixel che costituisce del rumore, mi aspetto che i pixel circostanti prevalgano nella predizione e il pixel venga così corretto.
+- Se scelto di mascherare un pixel che costituisce il segnale pulito s, mi aspetto che il risultato dato dalla loss function penalizzi la predizione, rispetto al pixel "corretto", e pertanto venga mantenuto un valore molto simile a quello originale per quel pixel.
+
+
+
+
+
