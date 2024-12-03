@@ -104,26 +104,26 @@ Nel sistema visivo umano, il termine "rumore" si riferisce a fonti di disturbo c
  
 
 # SOMIGLIANZE N2V E SISTEMA VISIVO UMANO
-È possibile individuare alcune somiglianze nel funzionamento e nei principi di base tra N2V e il sistema visivo umano.
+Il funzionamento di Noise2Void (N2V), un algoritmo per la rimozione del rumore nelle immagini, presenta alcune somiglianze con i principi di base del sistema visivo umano (HVS). Questi parallelismi emergono in tre ambiti principali: utilizzo del contesto, apprendimento e gestione delle illusioni.
 
 ## Utilizzo del contesto
-- N2V: l'algoritmo sfrutta il contesto locale di un'immagine per ricostruire il valore di un pixel rumoroso. Infatti durante l'addestramento, il metodo maschera pixel casuali all'interno dell'immagine, rendendoli "invisibili" per il modello. Il valore di questi pixel viene escluso temporaneamente. Lo scopo è di addestrare il modello a predire il valore corretto di questi pixel mascherati usando solo i pixel vicini. Questo approccio si basa sul fatto che, nelle immagini naturali, esistono forti correlazioni tra i pixel vicini, poiché i dettagli e le strutture visive tendono a essere continui o prevedibili (ad esempio, un gradiente uniforme o un bordo continuo).
+- N2V: l'algoritmo utilizza il contesto locale di un'immagine per ricostruire il valore di un pixel rumoroso. Durante l’addestramento, alcuni pixel vengono mascherati, rendendoli "invisibili" al modello, che deve predire il loro valore basandosi solo sui pixel circostanti. Questo approccio si basa su un principio fondamentale delle immagini naturali: i pixel vicini tendono a essere altamente correlati, poiché le strutture visive (come bordi o gradienti) sono generalmente continue e prevedibili.
 
-- HVS: Analogamente, il sistema visivo umano usa informazioni contestuali per "riempire i vuoti" nella percezione. Un esempio lampante è il riempimento percettivo, che si verifica nella gestione dell’area cieca (blind spot). Il punto cieco è un'area della retina priva di fotorecettori (coni e bastoncelli), corrispondente al punto in cui il nervo ottico lascia l'occhio. Poiché non ci sono recettori in questa regione, non può essere rilevata alcuna informazione visiva. Nonostante ciò, gli esseri umani non percepiscono un "buco" nel campo visivo. Il cervello "riempie" questa lacuna utilizzando:
+- HVS: allo stesso modo, il sistema visivo umano utilizza il contesto per compensare eventuali mancanze nella percezione visiva. Un esempio significativo è il riempimento percettivo che si verifica nella gestione del punto cieco (blind spot), una regione della retina priva di fotorecettori. Nonostante l'assenza di informazioni visive in questa zona, il cervello "riempie" la lacuna sfruttando:
     - le informazioni provenienti dall'altro occhio, se disponibile.
-    - le informazioni contestuali fornite dai punti circostanti, come linee continue, gradienti e texture.
+    - le informazioni contestuali fornite dai pixel circostanti, come linee continue, gradienti e texture.
 
-    Un altro esempio, quando osserviamo un oggetto parzialmente occluso, il cervello integra le informazioni visive disponibili per ricostruire una rappresentazione coerente. Questo processo sfrutta oltre al contesto locale anche conoscenze pregresse sull'ambiente e sugli oggetti.
+    Un altro esempio, quando osserviamo un oggetto parzialmente occluso, il cervello utilizza il contesto locale e le conoscenze pregresse sugli oggetti per ricostruire una rappresentazione visiva coerente.
 
 ## Apprendimento
-- N2V: è un modello di apprendimento supervisionato che viene addestrato utilizzando solo immagini rumorose. Durante l'addestramento, apprende a prevedere il valore del segnale pulito basandosi sulle relazioni statistiche osservate nel dataset rumoroso. Questo apprendimento non richiede un’immagine pulita come ground truth.
+- N2V: è un modello di apprendimento supervisionato che si addestra usando solo immagini rumorose, senza bisogno di un'immagine pulita come riferimento. Durante il processo di apprendimento, il modello identifica e sfrutta le relazioni statistiche nel dataset rumoroso per prevedere il segnale originale.
 
-- HVS: Il sistema visivo umano apprende in modo dinamico attraverso l'esperienza. Non ha bisogno di avere sempre accesso a una "verità di riferimento" (un'immagine "pulita" o senza errori) per interpretare correttamente il mondo. Man mano che il cervello accumula esperienze visive, diventa sempre più abile nel riconoscere oggetti, pattern e movimenti, adattandosi al contesto circostante.
+- HVS: anche il sistema visivo umano apprende dinamicamente attraverso l’esperienza, senza necessitare di una "verità di riferimento" (ad esempio, un’immagine perfettamente chiara). Il cervello migliora progressivamente le proprie capacità percettive man mano che accumula esperienze visive, diventando sempre più abile nel riconoscere pattern, oggetti e movimenti.
 
-    L'apprendimento percettivo è il miglioramento delle prestazioni in specifici compiti sensoriali che si verifica attraverso la pratica ripetuta. Gli studi dimostrano che l'apprendimento percettivo non riduce il rumore interno inerente ai meccanismi neurali della percezione. Piuttosto, l'apprendimento aumenta la capacità del cervello di estrarre e utilizzare il segnale esterno rilevante. Una teoria è che il sistema visivo determina l'identità di uno stimolo confrontandolo con una serie di modelli memorizzati.
+    Apprendimento percettivo: Si tratta del miglioramento delle prestazioni in compiti sensoriali attraverso la pratica ripetuta. Questo tipo di apprendimento non riduce il rumore interno (causato dalle fluttuazioni neurali), ma aumenta la capacità del cervello di estrarre e utilizzare il segnale rilevante. Una teoria chiave è che il cervello confronta gli stimoli visivi con una serie di modelli memorizzati per identificare correttamente ciò che percepisce.
 
 
 ## Illusioni
-- N2V: un punto debole di N2V è l'incapacità di distinguere tra rumore strutturato (che ha schemi ripetuti o correlati) e il segnale effettivo. Se il rumore ha caratteristiche simili a quelle del segnale (ad esempio, un pattern a righe), N2V potrebbe "apprenderlo" erroneamente come parte del segnale e non rimuoverlo.
+- N2V: una limitazione di N2V è la difficoltà nel distinguere tra rumore strutturato (caratterizzato da schemi ripetuti o correlati) e il segnale reale. Se il rumore presenta caratteristiche simili al segnale, come un pattern a righe, l'algoritmo potrebbe interpretarlo erroneamente come parte del segnale, compromettendo il risultato finale.
 
-- HVS: Allo stesso modo, il sistema visivo umano può essere ingannato da illusioni ottiche che sfruttano il rumore strutturato o schemi ambigui.
+- HVS: Analogamente, il sistema visivo umano può essere ingannato da illusioni ottiche che sfruttano schemi ambigui o rumore strutturato. Le illusioni dimostrano come il cervello, nel tentativo di interpretare il mondo, può cadere in errore quando il contesto o le informazioni disponibili portano a una rappresentazione visiva errata.
