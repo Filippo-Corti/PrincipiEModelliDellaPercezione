@@ -19,7 +19,44 @@ Il rumore può formarsi in vari modi durante il processo di acquisizione delle i
 - **Condizioni ambientali**: Fluttuazioni di temperatura, illuminazione instabile o vibrazioni possono introdurre rumore nei dati.
 - **Compressione dei dati**: Algoritmi di compressione per ridurre la dimensione del file possono introdurre artefatti che appaiono come rumore.
 
-## 3. **Come si Classifica il Rumore**
+
+## 3. Due categorie principali di rumore
+Non tutti i tipi di rumore sono uguali, si possono distinguere principalmente due categorie: rumore strutturato e rumore non strutturato.
+
+### 1. **Rumore Strutturato**
+Il rumore strutturato ha una configurazione regolare o un pattern riconoscibile. Questo tipo di rumore non è completamente casuale, ma spesso deriva da:
+* Problemi nei componenti hardware, come disturbi periodici dovuti a sensori difettosi o interferenze elettroniche
+* Errori introdotti in modo sistematico durante la cattura dell’immagine o la trasmissione dei dati.
+
+Ad esempio, nelle immagini si può notare un rumore strutturato sotto forma di bande o pattern ripetuti. Poiché ha una struttura prevedibile, è spesso più semplice da identificare e correggere rispetto al rumore non strutturato.
+
+#### Esempi di rumore strutturato
+- **Rumore Sale e Pepe**: È caratterizzato da pixel bianchi e neri casuali sparsi nell'immagine. È causato da errori di trasmissione o da difetti nel sensore o nei circuiti elettronici.
+Sebbene i pixel siano distribuiti casualmente, la loro presenza come pixel bianchi o neri distinti crea un pattern facilmente identificabile, rendendolo un tipo di rumore con una certa regolarità.
+- **Rumore a Bande (Banding Noise)** : Si manifesta come linee orizzontali o verticali regolari nell'immagine, spesso causate da problemi nei sensori della fotocamera, nelle fasi di lettura dei dati digitali o una compressione eccessiva dei dati, soprattutto nei video. Ha una struttura chiara e prevedibile, quindi è considerato strutturato.
+
+### 2.  **Rumore Non Strutturato**
+Il rumore non strutturato, invece, è completamente casuale e non segue alcun pattern. È causato da fattori come:
+* Fluttuazioni casuali nei fotoni durante l'acquisizione delle immagini (rumore fotonico).
+* Interferenze termiche nei sensori.
+* Compressione o trasmissione con perdita di dati.
+
+Questo tipo di rumore si manifesta tipicamente come granulosità o variazioni di colore casuali, spesso distribuite uniformemente sull’immagine. La sua casualità lo rende più difficile da prevedere e rimuovere, richiedendo tecniche avanzate come i filtri statistici o algoritmi di machine learning.
+
+#### Esempi di rumore non strutturato
+- **Rumore Gaussiano**: È un tipo di rumore completamente casuale e segue una distribuzione normale (gaussiana). È causato da fluttuazioni casuali nei sensori e in generale si distribuisce in modo uniforme in tutta l'immagine. È uno dei tipi di rumore più comuni nelle immagini. Non presenta pattern riconoscibili o regolari.
+- **Rumore di Poisson**: Tipicamente presente in immagini con scarsa illuminazione, è causato dalle fluttuazioni nel numero di fotoni rilevati dal sensore. Non segue un pattern fisso. 
+
+
+
+Conclusione
+Il rumore strutturato può essere eliminato identificando il pattern specifico, mentre per il rumore non strutturato si utilizzano approcci statistici per ridurne l'impatto.
+
+
+
+
+
+## 4. **Come si Classifica il Rumore**
 Esistono diversi tipi di rumore, ognuno con caratteristiche specifiche. I principali sono:
 
 - **Rumore Gaussiano**: È un tipo di rumore che segue una distribuzione normale (gaussiana). È causato da fluttuazioni casuali nei sensori e in generale si distribuisce in modo uniforme in tutta l'immagine. È uno dei tipi di rumore più comuni nelle immagini.
