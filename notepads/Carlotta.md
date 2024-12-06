@@ -63,7 +63,7 @@ N2V in pratica:
 
 
 ## Grand Challenge
-N2V è stato applicato in vari contesti, tra cui il **AI4Life Microscopy Denoising Challenge**, una competizione internazionale mirata al miglioramento delle immagini di microscopia, spesso affette da rumore (strutturato o non strutturato). 
+N2V è uno degli algoritmi più adatti a risolvere la **AI4Life Microscopy Denoising Challenge**, una competizione internazionale mirata al miglioramento delle immagini di microscopia, spesso affette da rumore (strutturato o non strutturato). 
 
 La challenge si concentra sul miglioramento della qualità delle immagini microscopiche biologiche riducendo il rumore senza comprometterne i dettagli o l'integrità visiva. I partecipanti sono invitati a sviluppare e applicare algoritmi avanzati su dataset standardizzati, contenenti immagini provenienti da diverse sorgenti biologiche. 
 Ogni dataset include un riferimento (ground truth) per consentire una valutazione oggettiva dei risultati.
@@ -97,7 +97,8 @@ Noise2Void (N2V) è particolarmente adatto per il contesto del challenge per le 
 
 ## Codice Python
 Le implementazioni di Noise2Void (N2V) sono facilmente accessibili attraverso librerie come **CSBDeep**, che sfrutta framework popolari come **TensorFlow** e **Keras**. 
-Per addestrare il modello, gli script richiedono di specificare parametri essenziali come il numero di epoche, la dimensione del batch e l'architettura della rete. L'approccio standard utilizza una rete convoluzionale che integra un meccanismo per escludere alcuni pixel durante l'addestramento. Questo processo permette alla rete di sviluppare una notevole capacità di riduzione del rumore, rendendola robusta anche in presenza di dati rumorosi.
+
+((Per addestrare il modello, gli script richiedono di specificare parametri essenziali come il numero di epoche, la dimensione del batch e l'architettura della rete. L'approccio standard utilizza una rete convoluzionale che integra un meccanismo per escludere alcuni pixel durante l'addestramento. Questo processo permette alla rete di sviluppare una notevole capacità di riduzione del rumore, rendendola robusta anche in presenza di dati rumorosi.))
 
 #### Immagini di codice:
 1. **Create the Training Configuration**:
