@@ -52,18 +52,6 @@ Questo tipo di rumore si manifesta tipicamente come granulosità o variazioni di
 Conclusione
 Il rumore strutturato può essere eliminato identificando il pattern specifico, mentre per il rumore non strutturato si utilizzano approcci statistici per ridurne l'impatto.
 
-
-
-
-
-## 4. **Come si Classifica il Rumore**
-Esistono diversi tipi di rumore, ognuno con caratteristiche specifiche. I principali sono:
-
-- **Rumore Gaussiano**: È un tipo di rumore che segue una distribuzione normale (gaussiana). È causato da fluttuazioni casuali nei sensori e in generale si distribuisce in modo uniforme in tutta l'immagine. È uno dei tipi di rumore più comuni nelle immagini.
-- **Rumore di Poisson**: Tipicamente presente in immagini con scarsa illuminazione, è causato dalle fluttuazioni casuali nel numero di fotoni rilevati dal sensore. Questo tipo di rumore è spesso associato a basse intensità di segnale.
-- **Rumore Sale e Pepe**: È caratterizzato da pixel bianchi e neri casuali sparsi nell'immagine. È causato da errori di trasmissione o da difetti nel sensore o nei circuiti elettronici.
-- **Rumore Uniforme**: Ha una distribuzione uniforme in tutte le direzioni dell'immagine e può essere causato da disturbi a livello di sensori o compressione dei dati.
-
 -----
 N2V in pratica:
 * Grand Challenge: cosa è, perche si usa N2V in questo contesto
