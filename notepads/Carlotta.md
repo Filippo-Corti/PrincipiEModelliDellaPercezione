@@ -1,3 +1,33 @@
+# Il Rumore
+Cos'è il Rumore:  
+* Come si forma
+* Come si classifica
+
+## 1. **Cos'è il Rumore nelle Immagini**
+Il **rumore** nelle immagini è una distorsione casuale che altera i pixel, rendendo l'immagine meno chiara o visibile. 
+
+Esso è un artefatto che non rappresenta informazioni reali e può compromettere l'analisi dei dati. 
+
+Il rumore può distorcere la qualità dell'immagine, influenzando la sua nitidezza, contrasto e dettagli.
+
+## 2. **Come si Forma il Rumore**
+Il rumore può formarsi in vari modi durante il processo di acquisizione delle immagini. Alcune cause comuni includono:
+
+- **Rumore da sensore**: Quando i sensori della fotocamera o del microscopio non catturano correttamente tutte le informazioni luminose, producendo distorsioni.
+- **Interferenze elettroniche**: Disturbi nei circuiti elettronici che possono alterare i segnali durante la registrazione.
+- **Limitazioni hardware**: La qualità dei dispositivi di acquisizione può essere una causa di rumore, soprattutto quando la risoluzione o la sensibilità non sono sufficienti.
+- **Condizioni ambientali**: Fluttuazioni di temperatura, illuminazione instabile o vibrazioni possono introdurre rumore nei dati.
+- **Compressione dei dati**: Algoritmi di compressione per ridurre la dimensione del file possono introdurre artefatti che appaiono come rumore.
+
+## 3. **Come si Classifica il Rumore**
+Esistono diversi tipi di rumore, ognuno con caratteristiche specifiche. I principali sono:
+
+- **Rumore Gaussiano**: È un tipo di rumore che segue una distribuzione normale (gaussiana). È causato da fluttuazioni casuali nei sensori e in generale si distribuisce in modo uniforme in tutta l'immagine. È uno dei tipi di rumore più comuni nelle immagini.
+- **Rumore di Poisson**: Tipicamente presente in immagini con scarsa illuminazione, è causato dalle fluttuazioni casuali nel numero di fotoni rilevati dal sensore. Questo tipo di rumore è spesso associato a basse intensità di segnale.
+- **Rumore Sale e Pepe**: È caratterizzato da pixel bianchi e neri casuali sparsi nell'immagine. È causato da errori di trasmissione o da difetti nel sensore o nei circuiti elettronici.
+- **Rumore Uniforme**: Ha una distribuzione uniforme in tutte le direzioni dell'immagine e può essere causato da disturbi a livello di sensori o compressione dei dati.
+
+-----
 N2V in pratica:
 * Grand Challenge: cosa è, perche si usa N2V in questo contesto
 * Codice Python
@@ -166,44 +196,6 @@ https://ai4life-mdc24.grand-challenge.org/
 https://ai4life-mdc24.grand-challenge.org/useful-links/
 
 
-# Il Rumore
-Cos'è il Rumore:  
-* Come si forma
-* Come si classifica
-
-## 1. **Cos'è il Rumore nelle Immagini**
-Il **rumore** nelle immagini è una distorsione casuale che altera i pixel, rendendo l'immagine meno chiara o visibile. 
-
-Esso è un artefatto che non rappresenta informazioni reali e può compromettere l'analisi dei dati. 
-
-Il rumore può distorcere la qualità dell'immagine, influenzando la sua nitidezza, contrasto e dettagli.
-
-## 2. **Come si Forma il Rumore**
-Il rumore può formarsi in vari modi durante il processo di acquisizione delle immagini. Alcune cause comuni includono:
-
-- **Rumore da sensore**: Quando i sensori della fotocamera o del microscopio non catturano correttamente tutte le informazioni luminose, producendo distorsioni.
-- **Interferenze elettroniche**: Disturbi nei circuiti elettronici che possono alterare i segnali durante la registrazione.
-- **Limitazioni hardware**: La qualità dei dispositivi di acquisizione può essere una causa di rumore, soprattutto quando la risoluzione o la sensibilità non sono sufficienti.
-- **Condizioni ambientali**: Fluttuazioni di temperatura, illuminazione instabile o vibrazioni possono introdurre rumore nei dati.
-- **Compressione dei dati**: Algoritmi di compressione per ridurre la dimensione del file possono introdurre artefatti che appaiono come rumore.
-
-## 3. **Come si Classifica il Rumore**
-Esistono diversi tipi di rumore, ognuno con caratteristiche specifiche. I principali sono:
-
-- **Rumore Gaussiano**: È un tipo di rumore che segue una distribuzione normale (gaussiana). È causato da fluttuazioni casuali nei sensori e in generale si distribuisce in modo uniforme in tutta l'immagine. È uno dei tipi di rumore più comuni nelle immagini.
-- **Rumore di Poisson**: Tipicamente presente in immagini con scarsa illuminazione, è causato dalle fluttuazioni casuali nel numero di fotoni rilevati dal sensore. Questo tipo di rumore è spesso associato a basse intensità di segnale.
-- **Rumore Sale e Pepe**: È caratterizzato da pixel bianchi e neri casuali sparsi nell'immagine. È causato da errori di trasmissione o da difetti nel sensore o nei circuiti elettronici.
-- **Rumore Uniforme**: Ha una distribuzione uniforme in tutte le direzioni dell'immagine e può essere causato da disturbi a livello di sensori o compressione dei dati.
-
-## 4. **Implicazioni per il Denoising**
-Il denoising, cioè la riduzione del rumore, è cruciale per migliorare la qualità delle immagini, specialmente in ambiti scientifici e medici come la microscopia. 
-
-I metodi di denoising cercano di eliminare il rumore pur mantenendo i dettagli e le caratteristiche importanti dell'immagine.
-
-Uno degli obiettivi principali del denoising è bilanciare la riduzione del rumore con la preservazione dei dettagli. Tecniche troppo aggressive possono portare alla perdita di informazioni importanti, come nel caso di sfocature nelle immagini. In ambiti come la microscopia, dove i dettagli sono cruciali, l'uso di metodi avanzati di denoising è particolarmente importante.
-
-In campo medico e scientifico, il denoising è fondamentale per migliorare la qualità delle immagini ottenute tramite tecniche come la risonanza magnetica (RM), la tomografia a emissione di positroni (PET) e la microscopia elettronica. La riduzione del rumore aiuta a ottenere diagnosi più precise, consentendo ai professionisti di osservare dettagli che potrebbero altrimenti essere oscurati dal rumore.
-
 
 
 -----------------------------
@@ -230,13 +222,6 @@ Cos'è il Rumore:
 * Rumore Sale e Pepe: Caratterizzato da pixel bianchi e neri sparsi nell’immagine, è causato da errori di trasmissione o difetti nei sensori e circuiti.
 * Rumore Uniforme: Distribuito uniformemente in tutte le direzioni, può derivare da disturbi nei sensori o nella compressione dei dati.
 
-
-## **Implicazioni per il Denoising**
-Il denoising, cioè la riduzione del rumore, è cruciale per migliorare la qualità delle immagini, specialmente in ambiti scientifici e medici come la microscopia. 
-I metodi di denoising cercano di eliminare il rumore pur mantenendo i dettagli e le caratteristiche importanti dell'immagine.
-Uno degli obiettivi principali del denoising è bilanciare la riduzione del rumore con la preservazione dei dettagli. 
-
-In campo medico e scientifico, la riduzione del rumore delle immagini diagnostiche è fondamentale, poiché consente ai professionisti di osservare dettagli che potrebbero altrimenti essere oscurati dal rumore.
 
 ------------------
 
