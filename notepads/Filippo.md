@@ -1,5 +1,7 @@
 
-# C. Appunti e Note
+# Noise2Void
+
+![Grand Challenge Banner](https://rumc-gcorg-p-public.s3.amazonaws.com/b/756/denoising.x10.jpeg)
 
 Le Immagini nel Dataset JUMP sono in formato .TIFF Hyperstack, con 4 canali per ogni immagine che rappresentano RGB + Alpha.
 
@@ -20,14 +22,15 @@ Vantaggi di N2V:
     + Richiede semplicemente Noisy Images
     + E' molto rapido, vedi confronto con BM3D
 
-
 ## Architettura di N2V
+
+![N2V U-Net](https://www.researchgate.net/publication/355399271/figure/fig2/AS:11431281208795806@1701440686812/Network-architecture-A-U-Net-network-with-a-blind-spot-mask-applied-to-the-input-is-used.jpg)
 
 Come si arriva all'Architettura di N2V:
 
 ### 1. Perceptron
 
-> IDEA: Simulate a humna neuron
+> IDEA: Simulate a human neuron
 
 The perceptron is a basic neural network unit that models the functioning
 of a biological neuron. It was developed by Frank Rosenblatt in the late 1950s
@@ -50,10 +53,10 @@ activation function σ is purely empirical such that there is always a room for
 an alternative choice given the problem and the performance of a model using
 a particular activation function σ
 
-[Check out
-https://www.researchgate.net/publication/369921211_Deep_Learning_Architectures
-https://towardsdatascience.com/what-the-hell-is-perceptron-626217814f53
-https://en.wikipedia.org/wiki/Rectifier_(neural_networks)
+[Check out   
+https://www.researchgate.net/publication/369921211_Deep_Learning_Architectures   
+https://towardsdatascience.com/what-the-hell-is-perceptron-626217814f53   
+https://en.wikipedia.org/wiki/Rectifier_(neural_networks)   
 ]
 
 
@@ -79,8 +82,8 @@ by a directed acyclic graph that illustrates the composition of functions.
 
 
 
-[Check out
-https://www.researchgate.net/publication/369921211_Deep_Learning_Architectures
+[Check out   
+https://www.researchgate.net/publication/369921211_Deep_Learning_Architectures   
 ]
 
 ### 3. Convolutional Neural Network
@@ -130,10 +133,10 @@ NOTA: i Dense Layers (la FNN) alla fine della CNN richiede che l'input venga por
 Questo è evidente poiché una matrice W di pesi MxN può essere applicata solamente ad un vettore di input di lunghezza N, per ottenere
 un vettore di output di lunghezza M. (Si noti: y = Wx + b, non y = xW + b) 
 
-[Check out
-https://www.researchgate.net/publication/369921211_Deep_Learning_Architectures
-https://www.geeksforgeeks.org/introduction-convolution-neural-network/
-https://www.andreaprovino.it/convolutional-neuralnetwork
+[Check out   
+https://www.researchgate.net/publication/369921211_Deep_Learning_Architectures    
+https://www.geeksforgeeks.org/introduction-convolution-neural-network/    
+https://www.andreaprovino.it/convolutional-neuralnetwork   
 ]
 
 ### 4. Fully Convolutional Network
@@ -163,12 +166,15 @@ L’assenza dei fully connected layers consente alle FCN Networks di:
  - elaborare immagini di diverse dimensioni, cosa non possibile con le strutture fisse convenzionali delle CNN.
  - avere una struttura più snella (lower parameters) e aumentare quindi la velocità computazionale, riducendo la latenza (low latency).
 
-Feature	                        CNN (Convolutional Neural Network)	                                            FCN (Fully Convolutional Network)
-Fully Connected Layers	        Yes, after convolution and pooling layers	                                    No, uses convolutional layers throughout the network
-Spatial Information	            Spatial information lost after flattening (fixed-size output)	                Retains spatial information (output size depends on input)
-Output	                        Fixed output size (e.g., class labels)	                                        Variable output size (e.g., pixel-level predictions in segmentation)
-Input Size	                    Fixed input size (needs resizing)	                                            Variable input size (can handle different input sizes)
-Use Cases	                    Image classification, regression	                                            Image segmentation, object localization, dense predictions
+
+| Feature                | CNN (Convolutional Neural Network)                            | FCN (Fully Convolutional Network)                                    |
+|------------------------|---------------------------------------------------------------|----------------------------------------------------------------------|
+| Fully Connected Layers | Yes, after convolution and pooling layers                     | No, uses convolutional layers throughout the network                 |
+| Spatial Information    | Spatial information lost after flattening (fixed-size output) | Retains spatial information (output size depends on input)           |
+| Output                 | Fixed output size (e.g., class labels)                        | Variable output size (e.g., pixel-level predictions in segmentation) |
+| Input Size             | Fixed input size (needs resizing)                             | Variable input size (can handle different input sizes)               |
+| Use Cases              | Image classification, regression                              | Image segmentation, object localization, dense predictions           |
+
 
 Instead of using fully connected layers, we can replace them with 1x1 convolutional layers. Here's why this works:
 
@@ -176,42 +182,7 @@ Instead of using fully connected layers, we can replace them with 1x1 convolutio
 This is done after the convolutional layers, and it allows the network to make pixel-wise predictions for each location in the image.
 Now, instead of reducing the image to a single class label, the network produces an output map that retains the spatial dimensions of the original image. But initially, after passing through convolutions, the output will still be smaller than the input due to operations like max pooling or stride convolutions.
 etup
-Let's say your input feature map has dimensions 32x32x128. This means the spatial dimensions of the image are 32x32, and there are 128 channels (depth).
 
-Input dimensions: 
-32×32×128
-32x32 are the spatial dimensions (height and width).
-128 is the number of channels (depth).
-1x1 Convolution Operation
-A 1x1 convolution applies a small 1x1 filter across the entire spatial grid (32x32), but with a depth that spans the number of input channels. Essentially, the filter "sees" the entire set of channels at each spatial location (pixel), and combines them in a weighted way.
-
-Filter size: 
-1×1×128 (this is the size of the filter applied at each pixel location, with depth equal to the number of input channels).
-Stride: Typically, stride=1 for 1x1 convolutions.
-Padding: Padding is usually not needed for 1x1 convolutions since you're applying it only on the spatial dimensions (height and width).
-How the 1x1 Convolution Works
-For each pixel (location) in the spatial grid (32x32), the convolution filter looks at all the channels in the input feature map. The 1x1 filter has 128 weights, one for each channel, and these weights are applied to the respective channels at that spatial location.
-
-Each spatial location (pixel) in the input feature map is processed by the 1x1 filter. The filter applies a weighted sum across all 128 channels at that pixel.
-Weight matrix for each spatial location: For each pixel, you apply a filter that is 
-1×1×128, so each pixel gets processed by a weight matrix that takes all 128 input channels into account.
-Output of 1x1 Convolution
-The output of this operation depends on how many filters (weights) you have in the 1x1 convolution layer.
-If you have M filters in the 1x1 convolution, the output will have M channels for each spatial location.
-Let's break down what happens during the 1x1 convolution:
-
-Each of the 128 input channels contributes to the final output at that pixel location (spatial location).
-If you apply M filters in the 1x1 convolution, each filter will generate one output value per pixel. So, for each spatial location, you will get M values, one for each filter.
-Example: 
-32×32×128 → 32×32×M
-Input: 
-32×32×128 (height x width x channels).
-1x1 Convolution Filters: 
-1×1×128 (for each pixel).
-Number of Filters: Suppose you use M filters in the 1x1 convolution layer.
-The result after the 1x1 convolution will be an output feature map of size 32x32xM, where M is the number of filters you have in the 1x1 convolution. Each filter produces one output value per spatial location, so the output has the same spatial dimensions (32x32) as the input, but the number of channels is now M instead of 128.
-
-The Process at Each Spatial Location
 Take each pixel in the input feature map (of size 32×32).
 Look at the 128 channels (depth) at that pixel.
 Apply each filter: Each filter has a set of 128 weights (one for each input channel at that pixel location). The filter computes a weighted sum of all the 128 input channels at that pixel.
@@ -238,13 +209,12 @@ This fusing operation actually is just like the boosting / ensemble technique us
 FCN-16s and 8s pose the intuition for the U-Net skip connections
 
 
-[Check out
-https://arxiv.org/pdf/1605.06211v1
-https://www.andreaprovino.it/fcn
-https://towardsdatascience.com/review-fcn-semantic-segmentation-eb8c9b50d2d1
-https://medium.com/@mohit_gaikwad/overview-fully-convolutional-network-for-semantic-segmentation-b4ef92eeb8c4
-https://datascience.stackexchange.com/questions/6107/what-are-deconvolutional-layers
-
+[Check out   
+https://arxiv.org/pdf/1605.06211v1   
+https://www.andreaprovino.it/fcn   
+https://towardsdatascience.com/review-fcn-semantic-segmentation-eb8c9b50d2d1   
+https://medium.com/@mohit_gaikwad/overview-fully-convolutional-network-for-semantic-segmentation-b4ef92eeb8c4   
+https://datascience.stackexchange.com/questions/6107/what-are-deconvolutional-layers   
 ]
 
 ### 5. U-Net
@@ -297,8 +267,6 @@ The u-net architecture achieves very good performance on very different biomedic
 it only needs very few annotated images and has a very reasonable training time
 
 ----------
-
-From other sites:
 
 The main idea is to supplement a usual contracting network by successive layers, where pooling operations are replaced by upsampling operators. Hence these layers increase the resolution of the output. A successive convolutional layer can then learn to assemble a precise output based on this information.
 
@@ -359,10 +327,10 @@ In terms of speed, both architectures can be efficient, but U-Nets often have an
 
 The Loss Function is minimized by an Optimizer. One of the most used ones is ADAM.
 
-[Check out 
-https://arxiv.org/pdf/1505.04597v1
-https://www.andreaprovino.it/u-net
-https://stackoverflow.com/questions/50239795/intuition-behind-u-net-vs-fcn-for-semantic-segmentation
+[Check out   
+https://arxiv.org/pdf/1505.04597v1   
+https://www.andreaprovino.it/u-net   
+https://stackoverflow.com/questions/50239795/intuition-behind-u-net-vs-fcn-for-semantic-segmentation   
 ]
 
 ### 6. N2V
@@ -472,8 +440,6 @@ for all of them, while ignoring the rest of the predicted image.
 
 -------
 
-Other sources:
-
 Objective
 The goal of N2V is to predict a clean signal using a noisy image as both the input and the target, without relying on a paired clean image. To make this work, N2V uses masking and stratified sampling to train efficiently while ensuring the network does not overfit to the noise.
 
@@ -542,16 +508,18 @@ Over time, as the network learns, its predictions for both masked and unmasked p
 By the end of training, the network can denoise the entire image effectively, even though the loss was calculated only on a subset of pixels.
 
 
-[Check out
-https://openaccess.thecvf.com/content_CVPR_2019/papers/Krull_Noise2Void_-_Learning_Denoising_From_Single_Noisy_Images_CVPR_2019_paper.pdf
-https://careamics.github.io/0.1/algorithms/Noise2Void/
+[Check out   
+https://openaccess.thecvf.com/content_CVPR_2019/papers/Krull_Noise2Void_-_Learning_Denoising_From_Single_Noisy_Images_CVPR_2019_paper.pdf   
+https://careamics.github.io/0.1/algorithms/Noise2Void/  
 ]
+
 
 
 ## Il Nostro Modello per N2V Denoising
 
 ### Configurazione:
 
+```
 {'algorithm_config': {'algorithm': 'n2v',
                       'loss': 'n2v',
                       'lr_scheduler': {'name': 'ReduceLROnPlateau',
@@ -592,6 +560,7 @@ https://careamics.github.io/0.1/algorithms/Noise2Void/
                                              'verbose': False},
                      'num_epochs': 100},
  'version': '0.1.0'}
+ ```
 
 ASPETTI DEGNI DI NOTA:
 
@@ -670,9 +639,9 @@ Factor: 0.1
 If the validation loss hasn’t improved after 3 consecutive epochs, the learning rate will be reduced to 0.01×0.1=0.001.
 
 
-[Check out 
-https://towardsdatascience.com/optimizers-for-training-neural-network-59450d71caf6 
-https://arxiv.org/pdf/1412.6980
+[Check out   
+https://towardsdatascience.com/optimizers-for-training-neural-network-59450d71caf6   
+https://arxiv.org/pdf/1412.6980   
 ]
 
 #### 2. Model
@@ -799,20 +768,8 @@ From the training are saved the best 3 checkpoints + the final model
 
 
 
-## Run our Model on BSD68 to see what happens
 
-Reference: https://careamics.github.io/0.1/applications/Noise2Void/BSD68/
-https://github.com/bnsreenu/python_for_microscopists/blob/master/293_denoising_RGB_images_using_deep%20learning.ipynb
-
-I want to:
-
-- Create a library folder with ALL and ONLY the functions I need for the Notebooks
-- Create a Notebook for the training and prediction of the JUMP Cell Database
-- Create a Notebook for the training and prediction of the BSD68 Training
-- Create a Notebook for the training and prediction of 1 single BSD68 image, for presentation
-
-
-# Discorso per Slide:
+# Appunti Finali
 
 ----------
 Noise2Void:
@@ -838,7 +795,7 @@ IDEA: simulare un Neurone Umano
 
 UTILITA': E' un Classificatore Binario Lineare, ovvero è in grado, data una serie di input descriventi un certo soggetto, di classificare secondo una logica "Si/No" tale soggetto rispetto ad una certa sua caratteristica, purché questa classificazione possa avvenire in maniera "lineare" (ovvero la divisione di un piano n-dimensionale tra soggetti sì e soggetti no deve essere possibile tramite il tracciamento di una funzione lineare).
 
-https://images.deepai.org/glossary-terms/3bb86574825445cba73a67222b744648/hyperplane.png
+https://images.deepai.org/glossary-terms/3bb86574825445cba73a67222b744648/hyperplane.png   
 
 FUNZIONAMENTO: Il Percettrone consiste di 4 parti: (a) Input layer, formato dal vettore di valori di input, (b) pesi, che vengono assegnati ad ognuno dei valori di input, (c) Operatore di Somma, che effettua la media pesata per i valori di input rispetto ai pesi e (d) Funzione di Attivazione, che tipicamente è definita impiricamente e serve ad effettuare un'ultima trasformazione all'output, ad esempio facendolo rientrare nel range [0,1]
 
