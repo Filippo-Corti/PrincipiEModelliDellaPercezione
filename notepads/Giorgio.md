@@ -1,16 +1,16 @@
 # TECNICHE PER LA RIMOZIONE DEL RUMORE
 
 ## Denoising
-L'obiettivo del denoising è ridurre il rumore nell'immagine per ottenere una stima che approssimi il più possibile l'immagine originale minimizzando il rumore senza compromettere le caratteristiche essenziali dell'immagine. Questo comporta diverse sfide:
-- Le aree piatte devono essere lisce: zone con colori o intensità uniformi non devono mostrare variazioni spurie introdotte dal rumore.
+L'obiettivo del denoising è ridurre il rumore in un'immagine per ottenere una stima che approssimi il più possibile l'immagine originale minimizzando il rumore senza compromettere alcune caratteristiche essenziali dell'immagine. Questo comporta diverse sfide:
+- Le zone uniformi devono restare omogenee: le aree con colori o luminosità costanti non devono mostrare variazioni indesiderate causate dal rumore.
 - I bordi devono essere preservati: i contorni e i dettagli significativi non devono essere sfocati durante il processo di denoising.
 - Le texture devono essere mantenute: pattern fini o regolari non devono essere erroneamente interpretati come rumore.
-- Non devono essere generati nuovi artefatti: il metodo di denoising non deve introdurre deformazioni visibili o strutture artificiali.
+- Non devono essere generati nuovi artefatti: il metodo di denoising non deve creare distorsioni visibili o elementi artificiali che non erano presenti nell'immagine originale.
 
 ## Tecniche di denoising
 
 ### 1. Spatial domain filtering
-I metodi di denoising nel dominio spaziale cercano di rimuovere il rumore direttamente sui pixel dell'immagine, sfruttando la correlazione tra i pixel o i gruppi di pixel vicini.
+I metodi di denoising nel dominio spaziale cercano di rimuovere il rumore direttamente sui pixel dell'immagine, sfruttando la correlazione tra i pixel e i suoi vicini.
 
 Il filtraggio è uno strumento centrale nell'elaborazione delle immagini, ed è utilizzato per ridurre il rumore modificando i valori di intensità dei pixel. I filtri nel dominio spaziale possono essere classificati in due categorie principali:
 - **Filtri lineari**: calcolano la nuova intensità di un pixel come combinazione lineare delle intensità dei pixel vicini
@@ -39,21 +39,16 @@ Dopo il filtraggio, l'immagine viene riconvertita dal dominio trasformato al dom
 
 Questi metodi si differenziano in base alla funzione di trasformazione utilizzata. Le principali categorie includono:
 - **Trasformazioni non adattive** (non-data-adaptive): si basano su trasformazioni standardizzate e su modelli generici che separano le caratteristiche dell'immagine dal rumore, senza tener conto delle peculiarità specifiche dell'immagine in analisi. Le tecniche più comuni sono:
-    - Trasformata di Fourier: converte l'immagine dal dominio spaziale al dominio della frequenza. Una volta trasformata, il denoising avviene tramite filtri passabasso che riducono i componenti di alta frequenza (associati al rumore), mantenendo le basse frequenze (associate alle caratteristiche principali dell'immagine).
-    - Trasformata wavelet: scompone l'immagine in una rappresentazione multi-scala, che consente di separare i dettagli a diverse risoluzioni. 
-- **Trasformazioni adattive** (data-adaptive): utilizzano tecniche che si adattano alle caratteristiche specifiche dell'immagine e del rumore. Le trasformazioni sono calcolate direttamente dai dati dell'immagine, rendendo il metodo più flessibile rispetto ai metodi non adattivi. Questi metodi includono strumenti come Analisi delle Componenti Indipendenti (ICA) e Analisi delle Componenti Principali (PCA), che cercano di separare le componenti del segnale utili da quelle corrotte dal rumore. 
+    - Trasformata di Fourier (FT): converte l'immagine dal dominio spaziale al dominio delle frequenze. Una volta trasformata, il denoising avviene tramite filtri passa-basso che riducono i componenti di alta frequenza (associati al rumore), mantenendo le basse frequenze (associate alle caratteristiche principali dell'immagine).
+    - Trasformata wavelet (WT): converte l'immagine dal dominio spaziale al dominio delle wavelet che scompone l'immagine in parti locali che vengono analizzandole a diverse scale (dalla visione generale ai piccoli dettagli). Invece di lavorare solo con le frequenze globali, localizza il dove si trovano queste frequenze nell'immagine. A questo punto è possibile separare i componenti a bassa frequenza da quelli ad alta frequenza. 
+- **Trasformazioni adattive** (data-adaptive): utilizzano tecniche che si adattano alle caratteristiche specifiche dell'immagine e del rumore. Le trasformazioni sono calcolate direttamente dai dati dell'immagine, rendendo il metodo più flessibile rispetto ai metodi non adattivi.
 
 ### 3. Metodi avanzati
 Uno dei metodi più popolari per il denoising delle immagini è BM3D (Block-Matching and 3D Filtering).
 
-BM3D si basa su una combinazione di tecniche di:
-- **Matching di blocchi**: l'immagine viene suddivisa in piccoli blocchi sovrapposti. Per ogni blocco di riferimento, si cercano blocchi simili in una regione circostante dell'immagine. I blocchi simili vengono raggruppati in un "cluster" tridimensionale.
-- **Filtraggio 3D**: i gruppi 3D sono trasformati nel dominio wavelet e viene applicato un filtro su questi gruppi. 
-- **Ricostruzione dell'immagine**: dopo il filtraggio, i blocchi ripuliti vengono trasformati nuovamente nello spazio immagine.
-
 BM3D è tipicamente implementato in due fasi principali:
-1. *Filtraggio di base* (Basic Estimation): si esegue il matching di blocchi e il filtraggio 3D iniziale. Questo passaggio produce una stima preliminare dell'immagine pulita.
-2. *Filtraggio raffinato* (Refinement Stage): si ripete il matching di blocchi e il filtraggio 3D, ma questa volta si utilizza l'immagine preliminare come riferimento. Questo passaggio migliora ulteriormente i dettagli fini.
+1. *Filtraggio di base* (Basic Estimation): Prende in input un'immagine rumorosa da cui si cercano e si raggruppano blocchi simili (frammenti 2D dell'immagine) in array tridimensionali (3D). A questo punto i blocchi vengono filtrati per eliminare il rumore mantenendo solo i componenti significativi. Le patch filtrate vengono combinate per ottenere una stima base dell'immagine, dove il rumore è parzialmente ridotto.
+2. *Filtraggio raffinato* (Refinement Stage): si ripete il matching di blocchi e il filtraggio 3D, ma questa volta si utilizza l'immagine preliminare come riferimento. In questo modo l'immagine viene ulteriormente lavorata garantendo una migliore qualità.
 
 ### 4. Metodi basati sull'apprendimento automatico
 I principali metodi basati sull’apprendimento automatico sono:
@@ -104,7 +99,7 @@ Nel sistema visivo umano, il termine "rumore" si riferisce a fonti di disturbo c
  
 
 # SOMIGLIANZE N2V E SISTEMA VISIVO UMANO
-Il funzionamento di Noise2Void (N2V), un algoritmo per la rimozione del rumore nelle immagini, presenta alcune somiglianze con i principi di base del sistema visivo umano (HVS). Questi parallelismi emergono in tre ambiti principali: utilizzo del contesto, apprendimento e gestione delle illusioni.
+Il funzionamento di Noise2Void (N2V) presenta alcune somiglianze con i principi di base del sistema visivo umano (HVS). Questi parallelismi emergono in tre ambiti principali: utilizzo del contesto, apprendimento e gestione delle illusioni.
 
 ## Utilizzo del contesto
 - N2V: l'algoritmo utilizza il contesto locale di un'immagine per ricostruire il valore di un pixel rumoroso. Durante l’addestramento, alcuni pixel vengono mascherati, rendendoli "invisibili" al modello, che deve predire il loro valore basandosi solo sui pixel circostanti. Questo approccio si basa su un principio fondamentale delle immagini naturali: i pixel vicini tendono a essere altamente correlati, poiché le strutture visive (come bordi o gradienti) sono generalmente continue e prevedibili.
@@ -116,7 +111,7 @@ Il funzionamento di Noise2Void (N2V), un algoritmo per la rimozione del rumore n
     Un altro esempio, quando osserviamo un oggetto parzialmente occluso, il cervello utilizza il contesto locale e le conoscenze pregresse sugli oggetti per ricostruire una rappresentazione visiva coerente.
 
 ## Apprendimento
-- N2V: è un modello di apprendimento supervisionato che si addestra usando solo immagini rumorose, senza bisogno di un'immagine pulita come riferimento. Durante il processo di apprendimento, il modello identifica e sfrutta le relazioni statistiche nel dataset rumoroso per prevedere il segnale originale.
+- N2V: è un modello di apprendimento autosupervisionato che si addestra usando solo immagini rumorose, senza bisogno di un'immagine pulita come riferimento. Durante il processo di apprendimento, il modello identifica e sfrutta le relazioni statistiche nel dataset rumoroso per prevedere il segnale originale.
 
 - HVS: anche il sistema visivo umano apprende dinamicamente attraverso l’esperienza, senza necessitare di una "verità di riferimento" (ad esempio, un’immagine perfettamente chiara). Il cervello migliora progressivamente le proprie capacità percettive man mano che accumula esperienze visive, diventando sempre più abile nel riconoscere pattern, oggetti e movimenti.
 
