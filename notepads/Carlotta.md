@@ -48,9 +48,6 @@ Questo tipo di rumore si manifesta tipicamente come granulosità o variazioni di
 - **Rumore di Poisson**: Tipicamente presente in immagini con scarsa illuminazione, è causato dalle fluttuazioni nel numero di fotoni rilevati dal sensore. Non segue un pattern fisso. 
 
 
-Conclusione: 
-Il rumore strutturato può essere eliminato identificando il pattern specifico, mentre per il rumore non strutturato si utilizzano approcci statistici per ridurne l'impatto.
-
 -----
 N2V in pratica:
 * Grand Challenge: cosa è, perche si usa N2V in questo contesto
@@ -95,9 +92,8 @@ Noise2Void (N2V) è particolarmente adatto per il contesto del challenge per le 
     I metodi di denoising tradizionali possono attenuare o distorcere dettagli importanti per l'analisi biologica. N2V è progettato per preservare le caratteristiche strutturali, rendendolo ideale per immagini di cellule, tessuti e altre strutture microscopiche.
 
 ## Codice Python
-Le implementazioni di Noise2Void (N2V) sono facilmente accessibili attraverso librerie come **CSBDeep**, che sfrutta framework popolari come **TensorFlow** e **Keras**. 
+Le implementazioni di Noise2Void (N2V) sono facilmente accessibili attraverso librerie come **CAREamist**, che sfrutta framework popolari come **TensorFlow** e **Keras**. 
 
-((Per addestrare il modello, gli script richiedono di specificare parametri essenziali come il numero di epoche, la dimensione del batch e l'architettura della rete. L'approccio standard utilizza una rete convoluzionale che integra un meccanismo per escludere alcuni pixel durante l'addestramento. Questo processo permette alla rete di sviluppare una notevole capacità di riduzione del rumore, rendendola robusta anche in presenza di dati rumorosi.))
 
 #### Immagini di codice:
 1. **Create the Training Configuration**:
@@ -199,15 +195,6 @@ Questo meccanismo porta a predizioni troppo lisce perché il modello tende a fav
 * Sfocatura su bordi o texture fini.
 
 #### Soluzione proposta da Noise2Void2 (N2V2)
-Noise2Void2 (N2V2) risolve il problema delle *blurry images* migliorando la qualità delle predizioni attraverso:
-((
-1. **Predizione probabilistica**: Invece di un valore singolo, stima una distribuzione di probabilità, preservando dettagli e bordi.
-2. **Nuova funzione di perdita**: Utilizza una perdita basata su distribuzioni, riducendo l'effetto di sovra-lisciamento.
-3. **Mascheramento ottimizzato**: Migliora il contesto locale per predizioni più accurate.
-4. **Incorporazione di priori**: Usa conoscenze predefinite per gestire strutture complesse.
-))
-
-
 Noise2Void2, o N2V2, affronta il problema delle immagini sfocate migliorando la qualità delle predizioni con diversi approcci.
 
 Prima di tutto, invece di dare un valore singolo, N2V2 stima una distribuzione di probabilità, mantenendo i dettagli e i bordi più nitidi. Poi, grazie a una nuova funzione di perdita basata su distribuzioni, riduce il rischio di sovra-lisciamento, cioè il rischio di rendere l’immagine troppo sfocata.
