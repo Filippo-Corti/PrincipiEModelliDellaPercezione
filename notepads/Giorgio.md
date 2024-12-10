@@ -47,7 +47,7 @@ Questi metodi si differenziano in base alla funzione di trasformazione utilizzat
 Uno dei metodi più popolari per il denoising delle immagini è BM3D (Block-Matching and 3D Filtering).
 
 BM3D è tipicamente implementato in due fasi principali:
-1. *Filtraggio di base* (Basic Estimation): Prende in input un'immagine rumorosa da cui si cercano e si raggruppano blocchi simili (frammenti 2D dell'immagine) in array tridimensionali (3D). A questo punto i blocchi vengono filtrati per eliminare il rumore mantenendo solo i componenti significativi. Le patch filtrate vengono combinate per ottenere una stima base dell'immagine, dove il rumore è parzialmente ridotto.
+1. *Filtraggio di base* (Basic Estimation): BM3D parte dal presupposto che le immagini naturali presentano molte strutture ridondanti: regioni simili o ripetute (come texture o gradienti uniformi). L'immagine viene suddivisa in piccoli blocchi (o patch), che sono porzioni quadrate di dimensioni fisse (ad esempio 8x8 pixel). Per ogni blocco preso in considerazione, il metodo cerca blocchi simili all'interno di un'area di ricerca dell'immagine. I blocchi simili vengono raggruppati insieme formando un array tridimensionale (3D) dove le dimensioni 1 e 2 corrispondono alla larghezza e all'altezza dei blocchi mentre la dimensione 3 rappresenta la raccolta dei blocchi simili. Ogni piano nell'array 3D corrisponde a uno dei blocchi individuati. Dopo il raggruppamento, i dati 3D vengono trasformati nel dominio della frequenza. In questo dominio, le componenti del rumore (che sono casuali) diventano sparse e più facili da distinguere rispetto alle informazioni utili (dettagli dell'immagine). A questo punto i blocchi vengono filtrati (hard-thresholding nella prima fase e Wiener nella seconda) per eliminare il rumore mantenendo solo i componenti significativi. Le patch filtrate vengono combinate per ottenere una stima base dell'immagine, dove il rumore è parzialmente ridotto.
 2. *Filtraggio raffinato* (Refinement Stage): si ripete il matching di blocchi e il filtraggio 3D, ma questa volta si utilizza l'immagine preliminare come riferimento. In questo modo l'immagine viene ulteriormente lavorata garantendo una migliore qualità.
 
 ### 4. Metodi basati sull'apprendimento automatico
@@ -77,6 +77,12 @@ I principali metodi basati sull’apprendimento automatico sono:
     - Discriminatore (Discriminator): valuta l'immagine generata dal Generatore confrontandola con immagini reali (senza rumore). Se il Discriminatore rileva differenze, segnala al Generatore di migliorare il suo output.
 
     La competizione tra queste reti permette al Generatore di migliorarsi continuamente, producendo immagini sempre più realistiche.
+
+    Il processo inizia con un'immagine di rumore casuale, che serve come input per la rete generativa. La rete generativa prende l'immagine rumorosa e genera un'immagine artificiale. Lo scopo del generatore è produrre immagini che siano il più simili possibile a quelle reali.
+
+    Al discriminatore vengono fornite due tipologie di input: le immagini reali, provenienti dal dataset originale e le immagini false, prodotte dal generatore. Il discriminatore valuta ciascuna immagine e cerca di distinguere tra immagini reali e false. 
+
+    Il discriminatore produce una label come output che è 1 se l'immagine è reale, 0 se l'immagine è falsa. Il processo di apprendimento avviene in competizione: il Generatore viene aggiornato per migliorare la sua capacità di "ingannare" il Discriminatore, creando immagini false sempre più realistich; il Discriminatore viene allenato per migliorare la sua capacità di distinguere tra immagini reali e false.
 
 I metodi appena descritti richiedono coppie di immagini (una rumorosa e una pulita). Tuttavia esistono contesti in cui raccogliere immagini pulite è difficile o impossibile, ad esempio, in ambito medico o astronomico.
 
