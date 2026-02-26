@@ -1,6 +1,6 @@
 # Neural Network Denoising with the Noise2Void Algorithm
 
-![Grand Challenge Banner](https://rumc-gcorg-p-public.s3.amazonaws.com/b/756/denoising.x10.jpeg)
+![Grand Challenge Banner]([https://rumc-gcorg-p-public.s3.amazonaws.com/b/756/denoising.x10.jpeg](https://public.grand-challenge-user-content.org/b/833/banner/1200w.avif))
 
 This repository provides a step-by-step guide for training and testing a U-Net Neural Network for image denoising using:
 * The [JUMP Dataset](https://github.com/jump-cellpainting/datasets). 
